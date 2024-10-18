@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 function App() {
   const ipcHandle = () => window.electron.ipcRenderer.send('ping')
   const fileHandle = () => window.electron.ipcRenderer.send('file')
@@ -5,11 +7,14 @@ function App() {
     const resp = await window.electron.ipcRenderer.invoke('fileGet')
     console.log('file selected:', resp)
   }
+  const navigate = useNavigate();
+  const goToSimulation = () => {
+    navigate("/simulation");
+  };
 
   return (
     <>
-      {/* <img alt="logo" className="logo" src={electronLogo} /> */}
-      <div className="text">
+      <div className="title">
         Rocket Visualizer
       </div>
       <p className="tip">
@@ -34,6 +39,11 @@ function App() {
         <div className="action">
           <a target="_blank" rel="noreferrer" onClick={fileHandleSend}>
             FileHandleSend
+          </a>
+        </div>
+        <div className="action">
+          <a target="_blank" rel="noreferrer" onClick={goToSimulation}>
+            Simulation
           </a>
         </div>
       </div>

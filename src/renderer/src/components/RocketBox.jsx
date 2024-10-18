@@ -1,95 +1,54 @@
-import React, { useEffect, useRef } from "react";
-import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import React, { useEffect } from 'react';
+import * as THREE from 'three';
 
-const style = {
-  border: "2px solid green",
-  borderRadius: "10px",
-  width: "200px",
-  height: "240px",
-  display: "inline-grid",
-  justifyContent: "center",
-  alignItems: "center",
-  fontFamily: "Orbitron, sans-serif",
-  backgroundColor: "#375237",
-};
-
-const TitleStyle = {
-  color: "white",
-  fontFamily: "Orbitron, sans-serif",
-  margin: "0",
-};
-
-const RocketBox = ({ label, cameraPosition }) => {
-  const mountRef = useRef(null);
-  const sceneRef = useRef(new THREE.Scene());
-  const rocketRef = useRef(null);
-
+const CubeRenderer = () => {
   useEffect(() => {
-    const scene = sceneRef.current;
-
-    // Create a camera for this RocketBox
-    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-    camera.position.set(...cameraPosition);
-    camera.lookAt(0, 0, 0);
-
-    // Renderer setup
+    // Set up the scene, camera, and renderer
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000); // Aspect ratio 1 to start as square
     const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(150, 150);
-    mountRef.current.appendChild(renderer.domElement);
+    document.body.appendChild(renderer.domElement);
 
-    // Lighting setup
-    const light = new THREE.AmbientLight(0x404040);
-    scene.add(light);
+    // Create a geometry and a basic material and combine them into a mesh
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
 
-    // Request the GLB model from the main process
-    window.electronAPI.loadModel('./../../dist/assets/models/red_rocket.glb').then((modelData) => {
-      if (modelData) {
-        const blob = new Blob([Buffer.from(modelData, 'base64')], { type: 'model/gltf-binary' });
-        const url = URL.createObjectURL(blob);
+    camera.position.z = 5;
 
-        const loader = new GLTFLoader();
-        loader.load(
-          url,
-          (gltf) => {
-            const rocket = gltf.scene;
-            rocketRef.current = rocket;
-            rocket.position.set(0, 0, 0); // Adjust the model's position if needed
-            scene.add(rocket); // Add the model to the scene
-          },
-          undefined,
-          (error) => {
-            console.error("Error loading GLB model:", error);
-          }
-        );
-      }
-    });
+    // Function to resize the canvas to always be a square
+    const resizeRenderer = () => {
+      const size = Math.min(window.innerWidth, window.innerHeight); // Get the smaller of width/height
+      renderer.setSize(size, size);
+      camera.aspect = 1; // Always keep the camera aspect ratio square
+      camera.updateProjectionMatrix();
+    };
 
-    const animate = () => {
+    // Initial resize on load
+    resizeRenderer();
+
+    // Add window resize listener
+    window.addEventListener('resize', resizeRenderer);
+
+    // Animation loop
+    const animate = function () {
       requestAnimationFrame(animate);
-      
-      if (rocketRef.current) {
-        rocketRef.current.rotation.x += 0.001;
-        rocketRef.current.rotation.y += 0.001;
-      }
-
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
       renderer.render(scene, camera);
     };
-
     animate();
-    return () => {
-      if (renderer && mountRef.current) {
-        mountRef.current.removeChild(renderer.domElement);
-      }
-    };
-  }, [cameraPosition]);
 
-  return (
-    <div style={style}>
-      <p style={TitleStyle}>{label}</p>
-      <div ref={mountRef} />
-    </div>
-  );
+    // Clean up on component unmount
+    return () => {
+      renderer.dispose();
+      document.body.removeChild(renderer.domElement);
+      window.removeEventListener('resize', resizeRenderer);
+    };
+  }, []);
+
+  return null;
 };
 
-export default RocketBox;
+export default CubeRenderer;
