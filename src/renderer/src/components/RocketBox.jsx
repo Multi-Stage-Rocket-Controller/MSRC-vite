@@ -13,18 +13,16 @@ const RocketBox = ({ size }) => {
       1000
     )
     const renderer = new THREE.WebGLRenderer({ antialias: true })
-
     renderer.setSize(window.innerWidth, window.innerHeight)
     document.body.appendChild(renderer.domElement)
 
     // Add lighting for better visibility
-    const light = new THREE.AmbientLight(0xffffff, 1)
-    scene.add(light)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5) // Softer ambient light
+    scene.add(ambientLight)
 
-    // Add a point light to highlight the rocket
-    const pointLight = new THREE.PointLight(0xffffff, 1)
-    pointLight.position.set(0, 100, 100)
-    scene.add(pointLight)
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1) // Strong directional light
+    directionalLight.position.set(0, 100, 100).normalize() // Set light direction
+    scene.add(directionalLight)
 
     // Create a cube for reference
     const geometry = new THREE.BoxGeometry()
@@ -35,12 +33,15 @@ const RocketBox = ({ size }) => {
     // Adjust camera distance for better viewing
     camera.position.set(0, 40, 150) // Move camera further back to see more
 
+    let rocketModel // To reference the rocket model
+
     // Load the GLTF model
     const loader = new GLTFLoader()
     loader.load(
       RedRocket,
       (gltf) => {
         const model = gltf.scene
+        rocketModel = model // Store the rocket model for later access
 
         // Adjust scale and position
         model.scale.set(5, 5, 5) // Scale up the model
@@ -51,7 +52,6 @@ const RocketBox = ({ size }) => {
         const bboxHelper = new THREE.BoxHelper(model, 0xff0000)
         scene.add(bboxHelper)
 
-        // Log the bounding box for debugging
         console.log('Model bounding box:', bbox)
 
         scene.add(model)
@@ -75,8 +75,15 @@ const RocketBox = ({ size }) => {
     // Animation loop
     const animate = () => {
       requestAnimationFrame(animate)
+
+      // Slowly rotate the rocket model along the x-axis if it's loaded
+      if (rocketModel) {
+        rocketModel.rotation.x += 0.01 // Adjust speed here as needed
+      }
+
       cube.rotation.x += 0.01
       cube.rotation.y += 0.01
+
       renderer.render(scene, camera)
     }
     animate()

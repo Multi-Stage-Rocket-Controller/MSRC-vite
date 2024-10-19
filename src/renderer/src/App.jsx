@@ -3,10 +3,6 @@ import { useNavigate } from "react-router-dom";
 function App() {
   const ipcHandle = () => window.electron.ipcRenderer.send('ping')
   const fileHandle = () => window.electron.ipcRenderer.send('file')
-  const fileHandleSend = async () => {
-    const resp = await window.electron.ipcRenderer.invoke('fileGet')
-    console.log('file selected:', resp)
-  }
   const navigate = useNavigate();
   const goToSimulation = () => {
     navigate("/simulation");
@@ -22,23 +18,13 @@ function App() {
       </p>
       <div className="actions">
         <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
           <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
+            Connect
           </a>
         </div>
         <div className="action">
           <a target="_blank" rel="noreferrer" onClick={fileHandle}>
-            Send File
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={fileHandleSend}>
-            FileHandleSend
+            Load
           </a>
         </div>
         <div className="action">
