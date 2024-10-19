@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import rocketIcon from '../../resources/rocket_icon.ico?asset'
 const { dialog } = require('electron')
+const fs = require('fs')
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -62,6 +63,16 @@ app.whenReady().then(() => {
       event.sender.send('file-selected', result.filePaths[0])
     }
   })
+  ipcMain.on('file-open', (event, filePath) => {
+    fs.readFile(filePath, 'utf-8', (err, data) => {
+      if (err) {
+        console.error('File read error:', err)
+        return
+      }
+      event.sender.send('file-data', data) // Send file data back to renderer
+    })
+  })
+
   ipcMain.handle('fileGet', async () => {
     const result = await dialog.showOpenDialog({
       properties: ['openFile']
