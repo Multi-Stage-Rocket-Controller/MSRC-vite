@@ -13,14 +13,18 @@ const SimulationScreen = ({ file }) => {
     justifyContent: 'space-around',
     marginTop: '20px'
   }
+  const simDivStyle = {
+    display: 'grid',
+    alignItems: 'center'
+  }
   const three_size = 200
 
   return (
-    <div>
+    <div style={simDivStyle}>
       <button onClick={handleMainWindow}>Back</button>
       <div style={modelRenderStyle}>
-        <RocketBox size={three_size} />
-        <RocketBox size={three_size} />
+        {/* <RocketBox size={three_size} />
+        <RocketBox size={three_size} /> */}
         <RocketBox size={three_size} />
       </div>
     </div>
