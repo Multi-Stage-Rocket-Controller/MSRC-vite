@@ -26,7 +26,7 @@ const SimulationScreen = ({ file }) => {
       <div style={modelRenderStyle}>
         {/* <RocketBox size={three_size} />
         <RocketBox size={three_size} /> */}
-        <RocketBox size={three_size} />
+        {/* <RocketBox size={three_size} /> */}
         <Chart />
       </div>
     </div>
