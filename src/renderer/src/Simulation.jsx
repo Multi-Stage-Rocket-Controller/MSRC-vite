@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import RocketBox from './components/RocketBox.jsx'
+import Chart from './components/Chart.jsx'
 import './assets/simulation.css'
 
 const SimulationScreen = ({ file }) => {
@@ -26,6 +27,7 @@ const SimulationScreen = ({ file }) => {
         {/* <RocketBox size={three_size} />
         <RocketBox size={three_size} /> */}
         <RocketBox size={three_size} />
+        <Chart />
       </div>
     </div>
   )
