@@ -1,6 +1,7 @@
 import React, { useRef } from 'react' // Ensure useRef is imported
 import { useNavigate } from 'react-router-dom'
 import RocketBox from './components/RocketBox.jsx'
+import Chart from './components/Chart.jsx'
 import './assets/simulation.css'
 
 const SimulationScreen = () => {
@@ -36,6 +37,7 @@ const SimulationScreen = () => {
         <RocketBox containerRef={threeDivRef3} x_cam={150} y_cam={0} z_cam={0} />
       </div>
     </div>
+        <Chart />
     </div>
   )
 }
