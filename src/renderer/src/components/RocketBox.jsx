@@ -73,17 +73,17 @@ const RocketBox = ({
         model.position.set(-center.x, -center.y, -center.z)
 
         // Apply MeshBasicMaterial to all child meshes
-        // model.traverse((child) => {
-        //   if (child.isMesh) {
-        //     child.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
-        //   }
-        // })
+        model.traverse((child) => {
+          if (child.isMesh) {
+            child.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
+          }
+        })
 
         // Bounding Box - Helper
-        // const bbox = new THREE.Box3().setFromObject(model)
-        // const bboxHelper = new THREE.BoxHelper(model, 0xff0000)
-        // scene.add(bboxHelper)
-        // console.log('Model bounding box:', bbox)
+        const bbox = new THREE.Box3().setFromObject(model)
+        const bboxHelper = new THREE.BoxHelper(model, 0xff0000)
+        scene.add(bboxHelper)
+        console.log('Model bounding box:', bbox)
 
         scene.add(model)
       },
@@ -108,7 +108,7 @@ const RocketBox = ({
 
       // Slowly rotate the rocket model along the x-axis if it's loaded
       if (rocketModel) {
-        // rocketModel.rotation.x += 0.01
+        rocketModel.rotation.x += 0.01
       }
       renderer.render(scene, camera)
     }
