@@ -3,7 +3,14 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import RedRocket from '../assets/red_rocket.glb'
 
-const RocketBox = ({ width = 300, height = 300, x_cam = 0, y_cam = 0, z_cam = 150, containerRef }) => {
+const RocketBox = ({
+  width = 300,
+  height = 300,
+  x_cam = 0,
+  y_cam = 0,
+  z_cam = 150,
+  containerRef
+}) => {
   useEffect(() => {
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000)
@@ -14,6 +21,31 @@ const RocketBox = ({ width = 300, height = 300, x_cam = 0, y_cam = 0, z_cam = 15
     if (containerRef.current) {
       containerRef.current.appendChild(renderer.domElement)
     }
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 10)
+    scene.add(ambientLight)
+    const strongLight = new THREE.DirectionalLight(0xffffff, 1)
+    strongLight.position.set(0, 100, 100).normalize()
+    scene.add(strongLight)
+
+    // Create planes -- helper function
+    // const createPlane = (color, position, rotation) => {
+    //   const planeGeometry = new THREE.PlaneGeometry(200, 200) // Adjust size as needed
+    //   const planeMaterial = new THREE.MeshBasicMaterial({
+    //     color: color,
+    //     side: THREE.DoubleSide,
+    //     transparent: true,
+    //     opacity: 0.5
+    //   }) // Make planes transparent
+    //   const plane = new THREE.Mesh(planeGeometry, planeMaterial)
+    //   plane.position.set(...position)
+    //   plane.rotation.set(...rotation)
+    //   scene.add(plane)
+    // }
+    // createPlane(0xff0000, [0, 0, 0], [Math.PI / 2, 0, 0]) // Red plane (X-Y)
+    // createPlane(0x00ff00, [0, 0, 0], [0, 0, 0]) // Green plane (Y-Z)
+    // createPlane(0xffff00, [0, 0, 0], [0, Math.PI / 2, 0]) // Yellow plane (X-Z)
 
     // Create a cube for reference
     const geometry = new THREE.BoxGeometry()
@@ -31,24 +63,27 @@ const RocketBox = ({ width = 300, height = 300, x_cam = 0, y_cam = 0, z_cam = 15
       RedRocket,
       (gltf) => {
         const model = gltf.scene
-        rocketModel = model // Store the rocket model for later access
+        rocketModel = model
 
         // Adjust scale and position
-        model.scale.set(5, 5, 5) // Scale up the model
-        model.position.set(0, 0, 0) // Ensure it's centered
+        model.scale.set(5, 5, 5)
+        // Center the model
+        const bbox2 = new THREE.Box3().setFromObject(model)
+        const center = bbox2.getCenter(new THREE.Vector3())
+        model.position.set(-center.x, -center.y, -center.z)
 
         // Apply MeshBasicMaterial to all child meshes
-        model.traverse((child) => {
-          if (child.isMesh) {
-            child.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
-          }
-        })
+        // model.traverse((child) => {
+        //   if (child.isMesh) {
+        //     child.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
+        //   }
+        // })
 
-        // Bounding box helper to check model's bounds
-        const bboxHelper = new THREE.BoxHelper(model, 0xff0000)
-        scene.add(bboxHelper)
-
-        console.log('Model bounding box:', bboxHelper)
+        // Bounding Box - Helper
+        // const bbox = new THREE.Box3().setFromObject(model)
+        // const bboxHelper = new THREE.BoxHelper(model, 0xff0000)
+        // scene.add(bboxHelper)
+        // console.log('Model bounding box:', bbox)
 
         scene.add(model)
       },
@@ -68,18 +103,13 @@ const RocketBox = ({ width = 300, height = 300, x_cam = 0, y_cam = 0, z_cam = 15
     resizeRenderer()
     window.addEventListener('resize', resizeRenderer)
 
-    // Animation loop
     const animate = () => {
       requestAnimationFrame(animate)
 
       // Slowly rotate the rocket model along the x-axis if it's loaded
       if (rocketModel) {
-        rocketModel.rotation.x += 0.01 // Adjust speed here as needed
+        // rocketModel.rotation.x += 0.01
       }
-
-      cube.rotation.x += 0.01
-      cube.rotation.y += 0.01
-
       renderer.render(scene, camera)
     }
     animate()
