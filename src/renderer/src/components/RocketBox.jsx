@@ -3,26 +3,17 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import RedRocket from '../assets/red_rocket.glb'
 
-const RocketBox = ({ size }) => {
+const RocketBox = ({ width = 300, height = 300, x_cam = 0, y_cam = 0, z_cam = 150, containerRef }) => {
   useEffect(() => {
     const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    )
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000)
     const renderer = new THREE.WebGLRenderer({ antialias: true })
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    document.body.appendChild(renderer.domElement)
+    renderer.setSize(width, height)
 
-    // Add lighting for better visibility
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5) // Softer ambient light
-    scene.add(ambientLight)
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1) // Strong directional light
-    directionalLight.position.set(0, 100, 100).normalize() // Set light direction
-    scene.add(directionalLight)
+    // Append renderer to the container div
+    if (containerRef.current) {
+      containerRef.current.appendChild(renderer.domElement)
+    }
 
     // Create a cube for reference
     const geometry = new THREE.BoxGeometry()
@@ -30,12 +21,11 @@ const RocketBox = ({ size }) => {
     const cube = new THREE.Mesh(geometry, material)
     scene.add(cube)
 
-    // Adjust camera distance for better viewing
-    camera.position.set(0, 40, 150) // Move camera further back to see more
+    // Position the camera
+    camera.position.set(x_cam, y_cam, z_cam)
+    camera.lookAt(0, 0, 0) // Ensure the camera is always looking at the center of the scene
 
-    let rocketModel // To reference the rocket model
-
-    // Load the GLTF model
+    let rocketModel
     const loader = new GLTFLoader()
     loader.load(
       RedRocket,
@@ -47,12 +37,18 @@ const RocketBox = ({ size }) => {
         model.scale.set(5, 5, 5) // Scale up the model
         model.position.set(0, 0, 0) // Ensure it's centered
 
-        // Optional: Bounding box helper to check model's bounds
-        const bbox = new THREE.Box3().setFromObject(model)
+        // Apply MeshBasicMaterial to all child meshes
+        model.traverse((child) => {
+          if (child.isMesh) {
+            child.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
+          }
+        })
+
+        // Bounding box helper to check model's bounds
         const bboxHelper = new THREE.BoxHelper(model, 0xff0000)
         scene.add(bboxHelper)
 
-        console.log('Model bounding box:', bbox)
+        console.log('Model bounding box:', bboxHelper)
 
         scene.add(model)
       },
@@ -64,8 +60,8 @@ const RocketBox = ({ size }) => {
 
     // Handle resizing of the renderer
     const resizeRenderer = () => {
-      renderer.setSize(window.innerWidth, window.innerHeight)
-      camera.aspect = window.innerWidth / window.innerHeight
+      renderer.setSize(width, height)
+      camera.aspect = width / height
       camera.updateProjectionMatrix()
     }
 
@@ -90,10 +86,12 @@ const RocketBox = ({ size }) => {
 
     return () => {
       renderer.dispose()
-      document.body.removeChild(renderer.domElement)
+      if (containerRef.current) {
+        containerRef.current.removeChild(renderer.domElement)
+      }
       window.removeEventListener('resize', resizeRenderer)
     }
-  }, [size])
+  }, [width, height, x_cam, y_cam, z_cam, containerRef])
 
   return null
 }
