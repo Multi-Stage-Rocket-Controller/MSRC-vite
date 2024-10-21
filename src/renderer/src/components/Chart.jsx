@@ -30,11 +30,11 @@ const Chart = () => {
         <li> Current Roll_Radians: {rollRadiansTotal[count]} </li>
         <li> Current Pitch_Radians: {pitchRadiansTotal[count]} </li>
         <li> Current Yaw_Radians: {yawRadiansTotal[count]} </li>
-        <li> Current Latitude: {latitudeTotal[count]} </li>
-        <li> Current Longitude: {longitudeTotal[count]} </li>
         <li> Current Acceleration: {accelerationDataTotal[count]} </li>
         <li> Current Altitude: {altitudeTotal[count]} </li>
         <li> Current Voltage: {voltageTotaL[count]} </li>
+        <li> Current Latitude: {latitudeTotal[count]} </li>
+        <li> Current Longitude: {longitudeTotal[count]} </li>
       </ul>
     </div>
   )
