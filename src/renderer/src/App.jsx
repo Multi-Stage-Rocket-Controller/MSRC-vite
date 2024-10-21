@@ -19,7 +19,7 @@ function App() {
       <div className="actions">
         <div className="action">
           <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Connect
+            Ping
           </a>
         </div>
         <div className="action">
