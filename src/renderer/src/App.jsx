@@ -14,7 +14,7 @@ function App() {
         Rocket Visualizer
       </div>
       <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
+        Demo Version
       </p>
       <div className="actions">
         <div className="action">

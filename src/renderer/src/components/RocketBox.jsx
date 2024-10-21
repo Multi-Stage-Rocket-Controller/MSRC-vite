@@ -22,12 +22,21 @@ const RocketBox = ({
       containerRef.current.appendChild(renderer.domElement)
     }
 
-    // Lighting
+    // Lighting - need all for full illumination
     const ambientLight = new THREE.AmbientLight(0xffffff, 10)
     scene.add(ambientLight)
-    const strongLight = new THREE.DirectionalLight(0xffffff, 1)
+    const strongLight = new THREE.DirectionalLight(0xffffff, 5)
     strongLight.position.set(0, 100, 100).normalize()
     scene.add(strongLight)
+    const strongLight2 = new THREE.DirectionalLight(0xffffff, 5)
+    strongLight2.position.set(100, 0, 100).normalize()
+    scene.add(strongLight2)
+    const strongLight3 = new THREE.DirectionalLight(0xffffff, 5)
+    strongLight3.position.set(100, 100, 0).normalize()
+    scene.add(strongLight3)
+    const strongLight4 = new THREE.DirectionalLight(0xffffff, 5)
+    strongLight4.position.set(0, 100, 0).normalize()
+    scene.add(strongLight4)
 
     // Create planes -- helper function
     // const createPlane = (color, position, rotation) => {
@@ -73,17 +82,17 @@ const RocketBox = ({
         model.position.set(-center.x, -center.y, -center.z)
 
         // Apply MeshBasicMaterial to all child meshes
-        model.traverse((child) => {
-          if (child.isMesh) {
-            child.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
-          }
-        })
+        // model.traverse((child) => {
+        //   if (child.isMesh) {
+        //     child.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
+        //   }
+        // })
 
         // Bounding Box - Helper
-        const bbox = new THREE.Box3().setFromObject(model)
-        const bboxHelper = new THREE.BoxHelper(model, 0xff0000)
-        scene.add(bboxHelper)
-        console.log('Model bounding box:', bbox)
+        // const bbox = new THREE.Box3().setFromObject(model)
+        // const bboxHelper = new THREE.BoxHelper(model, 0xff0000)
+        // scene.add(bboxHelper)
+        // console.log('Model bounding box:', bbox)
 
         scene.add(model)
       },
