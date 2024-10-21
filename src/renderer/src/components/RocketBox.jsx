@@ -9,6 +9,9 @@ const RocketBox = ({
   x_cam = 0,
   y_cam = 0,
   z_cam = 150,
+  roll = 0,    // Added roll prop
+  pitch = 0,   // Added pitch prop
+  yaw = 0,     // Added yaw prop
   containerRef
 }) => {
   useEffect(() => {
@@ -81,6 +84,11 @@ const RocketBox = ({
         const center = bbox2.getCenter(new THREE.Vector3())
         model.position.set(-center.x, -center.y, -center.z)
 
+        // Apply initial rotation using props
+        model.rotation.x = pitch; // Pitch rotation
+        model.rotation.y = yaw;   // Yaw rotation
+        model.rotation.z = roll;   // Roll rotation
+
         // Apply MeshBasicMaterial to all child meshes
         // model.traverse((child) => {
         //   if (child.isMesh) {
@@ -117,7 +125,7 @@ const RocketBox = ({
 
       // Slowly rotate the rocket model along the x-axis if it's loaded
       if (rocketModel) {
-        rocketModel.rotation.x += 0.01
+        // rocketModel.rotation.x += 0.01
       }
       renderer.render(scene, camera)
     }
@@ -130,7 +138,7 @@ const RocketBox = ({
       }
       window.removeEventListener('resize', resizeRenderer)
     }
-  }, [width, height, x_cam, y_cam, z_cam, containerRef])
+  }, [width, height, x_cam, y_cam, z_cam, roll, pitch, yaw, containerRef])
 
   return null
 }
