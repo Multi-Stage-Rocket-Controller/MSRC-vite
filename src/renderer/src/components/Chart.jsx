@@ -35,7 +35,21 @@ const Chart = () => {
         <li> Current Acceleration: {accelerationDataTotal[count]} </li>
         <li> Current Altitude: {altitudeTotal[count]} </li>
         <li> Current Voltage: {voltageTotaL[count]} </li>
+        <li> Time Elapsed: {labelArrayTotal[count]} </li>
       </ul>
+      <Line
+        data={{
+          labels: labelArrayTotal,
+          datasets: [
+            {
+              label: 'Acceleration',
+              data: accelerationDataTotal,
+              backgroundColor: '#064FF0',
+              borderColor: '#064FF0'
+            }
+          ]
+        }}
+      />
     </div>
   )
 }
