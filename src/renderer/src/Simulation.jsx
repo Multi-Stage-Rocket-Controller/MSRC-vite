@@ -28,12 +28,15 @@ const SimulationScreen = () => {
     <button onClick={handleMainWindow}>Back</button>
     <div className="threeDiv">
       <div ref={threeDivRef1} style={{ width: 300, height: 300 }}>
+        {/* X-Y Plane */}
         <RocketBox containerRef={threeDivRef1} />
       </div>
       <div ref={threeDivRef2} style={{ width: 300, height: 300 }}>
+        {/* X-Z Plane */}
         <RocketBox containerRef={threeDivRef2} x_cam={0} y_cam={150} z_cam={0} />
       </div>
       <div ref={threeDivRef3} style={{ width: 300, height: 300 }}>
+        {/* Y-Z Plane */}
         <RocketBox containerRef={threeDivRef3} x_cam={150} y_cam={0} z_cam={0} />
       </div>
     </div>
