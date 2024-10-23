@@ -125,7 +125,7 @@ const RocketBox = ({
 
       // Slowly rotate the rocket model along the x-axis if it's loaded
       if (rocketModel) {
-        // rocketModel.rotation.x += 0.01
+        rocketModel.rotation.y += 0.001
       }
       renderer.render(scene, camera)
     }
