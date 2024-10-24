@@ -68,13 +68,6 @@ code {
   text-shadow: 0px 3px 2px #FB6452;
 }
 
-.tip {
-  font-size: 16px;
-  line-height: 24px;
-  color: var(--ev-c-text-2);
-  font-weight: 600;
-}
-
 .react {
   background: -webkit-linear-gradient(315deg, #087ea4 55%, #7c93ee);
   background-clip: text;
