@@ -1,7 +1,6 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
 import rocketIcon from '../../resources/rocket_icon.ico?asset'
 const { dialog } = require('electron')
 const fs = require('fs')
@@ -53,7 +52,6 @@ app.whenReady().then(() => {
   })
 
   // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
   ipcMain.on('file', async (event) => {
     console.log('in fileSearch')
     const result = await dialog.showOpenDialog({
