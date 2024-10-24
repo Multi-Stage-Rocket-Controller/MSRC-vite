@@ -2,6 +2,7 @@ import React, { useRef } from 'react' // Ensure useRef is imported
 import { useNavigate } from 'react-router-dom'
 import RocketBox from './components/RocketBox.jsx'
 import Chart from './components/Chart.jsx'
+import Background from "./components/Background.jsx";
 import './assets/simulation.css'
 
 const SimulationScreen = () => {
@@ -30,6 +31,7 @@ const SimulationScreen = () => {
 
   return (
     <div style={simDivStyle}>
+      <Background />
       <button onClick={handleMainWindow}>Back</button>
       <div className="threeDiv">
         <div ref={threeDivRef1} style={{ width: 300, height: 300 }}>
