@@ -1,4 +1,11 @@
 :root {
+  --figma-red: #FB6452;
+  --figma-green: #4AA433;
+  --figma-yellow: #E6DC81;
+  --figma-white: #F4F5F2;
+  --figma-tan: #FEECCF;
+  --figma-black: #0E0E0E;
+  
   --ev-c-white: #ffffff;
   --ev-c-white-soft: #f8f8f8;
   --ev-c-white-mute: #f2f2f2;

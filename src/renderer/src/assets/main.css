@@ -95,7 +95,7 @@ code {
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
-  border: 1px solid transparent;
+  border: 3px solid var(--figma-green);
   text-align: center;
   font-weight: 600;
   white-space: nowrap;
@@ -103,15 +103,12 @@ code {
   padding: 0 20px;
   line-height: 38px;
   font-size: 14px;
-  border-color: var(--ev-button-alt-border);
-  color: var(--ev-button-alt-text);
-  background-color: var(--ev-button-alt-bg);
+  background-color: transparent;
 }
 
 .action a:hover {
-  border-color: var(--ev-button-alt-hover-border);
-  color: var(--ev-button-alt-hover-text);
-  background-color: var(--ev-button-alt-hover-bg);
+  border: 3px solid var(--figma-green);
+  background-color: var(--figma-green);
 }
 
 .versions {
