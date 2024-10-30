@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import RocketBox from './components/RocketBox.jsx'
 import Chart from './components/Chart.jsx'
 import './assets/simulation.css'
+import rocketData from './utils/data.json'
 
 const SimulationScreen = () => {
   const navigate = useNavigate()
@@ -31,28 +32,7 @@ const SimulationScreen = () => {
   return (
     <div style={simDivStyle}>
       <button onClick={handleMainWindow}>Back</button>
-      <div className="threeDiv">
-        <div ref={threeDivRef1} style={{ width: 300, height: 300 }}>
-          {/* X-Y Plane */}
-          <RocketBox containerRef={threeDivRef1} />
-        </div>
-        <div ref={threeDivRef2} style={{ width: 300, height: 300 }}>
-          {/* X-Z Plane */}
-          <RocketBox
-            containerRef={threeDivRef2}
-            x_cam={0}
-            y_cam={150}
-            z_cam={0}
-            roll={roll}
-            pitch={pitch}
-            yaw={yaw}
-          />
-        </div>
-        <div ref={threeDivRef3} style={{ width: 300, height: 300 }}>
-          {/* Y-Z Plane */}
-          <RocketBox containerRef={threeDivRef3} x_cam={150} y_cam={0} z_cam={0} />
-        </div>
-      </div>
+      <div className="threeDiv"></div>
       <Chart />
     </div>
   )

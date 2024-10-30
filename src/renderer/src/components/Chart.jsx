@@ -25,29 +25,35 @@ const Chart = () => {
   }, [count])
 
   return (
-    <div>
-      <ul>
-        <li> Current Roll_Radians: {rollRadiansTotal[count]} </li>
-        <li> Current Pitch_Radians: {pitchRadiansTotal[count]} </li>
-        <li> Current Yaw_Radians: {yawRadiansTotal[count]} </li>
-        <li> Current Acceleration: {accelerationDataTotal[count]} </li>
-        <li> Current Altitude: {altitudeTotal[count]} </li>
-        <li> Current Voltage: {voltageTotaL[count]} </li>
-        <li> Time Elapsed: {labelArrayTotal[count]} </li>
-      </ul>
-      <Line
-        data={{
-          labels: labelArrayTotal,
-          datasets: [
-            {
-              label: 'Acceleration',
-              data: accelerationDataTotal,
-              backgroundColor: '#064FF0',
-              borderColor: '#064FF0'
-            }
-          ]
-        }}
-      />
+    <div style={{ display: 'flex' }}>
+      <div style={{ flex: 1 }}>
+        <ul>
+          <li> Current Roll_Radians: {rollRadiansTotal[count]} </li>
+          <li> Current Pitch_Radians: {pitchRadiansTotal[count]} </li>
+          <li> Current Yaw_Radians: {yawRadiansTotal[count]} </li>
+          <li> Current Latitude: {latitudeTotal[count]} </li>
+          <li> Current Longitude: {longitudeTotal[count]} </li>
+          <li> Current Acceleration: {accelerationDataTotal[count]} </li>
+          <li> Current Altitude: {altitudeTotal[count]} </li>
+          <li> Current Voltage: {voltageTotaL[count]} </li>
+          <li> Time Elapsed: {labelArrayTotal[count]} </li>
+        </ul>
+      </div>
+      <div style={{ flex: 1 }}>
+        <Line
+          data={{
+            labels: labelArrayTotal,
+            datasets: [
+              {
+                label: 'Acceleration',
+                data: accelerationDataTotal,
+                backgroundColor: '#064FF0',
+                borderColor: '#064FF0'
+              }
+            ]
+          }}
+        />
+      </div>
     </div>
   )
 }
