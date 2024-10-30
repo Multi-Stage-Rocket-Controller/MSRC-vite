@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import RocketBox from './components/RocketBox.jsx'
 import Chart from './components/Chart.jsx'
 import './assets/simulation.css'
-import rocketData from './utils/data.json'
+import rocketDataMain from './utils/data.json'
 
 const SimulationScreen = () => {
   const navigate = useNavigate()
@@ -33,7 +33,7 @@ const SimulationScreen = () => {
     <div style={simDivStyle}>
       <button onClick={handleMainWindow}>Back</button>
       <div className="threeDiv"></div>
-      <Chart />
+      <Chart rocketData = rocketDataMain/>
     </div>
   )
 }

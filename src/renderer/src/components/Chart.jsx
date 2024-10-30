@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react'
 import rocketData from '../utils/data.json'
 
 const Chart = () => {
+  rocketData = {}
+
   const labelArrayTotal = rocketData.map((data) => data.Timestamp)
   const rollRadiansTotal = rocketData.map((data) => data.Roll_Radians)
   const pitchRadiansTotal = rocketData.map((data) => data.Pitch_Radians)
