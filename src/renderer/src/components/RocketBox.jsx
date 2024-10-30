@@ -3,26 +3,61 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import RedRocket from '../assets/red_rocket.glb'
 
-const RocketBox = ({ size }) => {
+const RocketBox = ({
+  width = 300,
+  height = 300,
+  x_cam = 0,
+  y_cam = 0,
+  z_cam = 150,
+  roll = 0,    // Added roll prop
+  pitch = 0,   // Added pitch prop
+  yaw = 0,     // Added yaw prop
+  containerRef
+}) => {
   useEffect(() => {
     const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    )
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000)
     const renderer = new THREE.WebGLRenderer({ antialias: true })
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    document.body.appendChild(renderer.domElement)
+    renderer.setSize(width, height)
 
-    // Add lighting for better visibility
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5) // Softer ambient light
+    // Append renderer to the container div
+    if (containerRef.current) {
+      containerRef.current.appendChild(renderer.domElement)
+    }
+
+    // Lighting - need all for full illumination
+    const ambientLight = new THREE.AmbientLight(0xffffff, 10)
     scene.add(ambientLight)
+    const strongLight = new THREE.DirectionalLight(0xffffff, 5)
+    strongLight.position.set(0, 100, 100).normalize()
+    scene.add(strongLight)
+    const strongLight2 = new THREE.DirectionalLight(0xffffff, 5)
+    strongLight2.position.set(100, 0, 100).normalize()
+    scene.add(strongLight2)
+    const strongLight3 = new THREE.DirectionalLight(0xffffff, 5)
+    strongLight3.position.set(100, 100, 0).normalize()
+    scene.add(strongLight3)
+    const strongLight4 = new THREE.DirectionalLight(0xffffff, 5)
+    strongLight4.position.set(0, 100, 0).normalize()
+    scene.add(strongLight4)
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1) // Strong directional light
-    directionalLight.position.set(0, 100, 100).normalize() // Set light direction
-    scene.add(directionalLight)
+    // Create planes -- helper function
+    // const createPlane = (color, position, rotation) => {
+    //   const planeGeometry = new THREE.PlaneGeometry(200, 200) // Adjust size as needed
+    //   const planeMaterial = new THREE.MeshBasicMaterial({
+    //     color: color,
+    //     side: THREE.DoubleSide,
+    //     transparent: true,
+    //     opacity: 0.5
+    //   }) // Make planes transparent
+    //   const plane = new THREE.Mesh(planeGeometry, planeMaterial)
+    //   plane.position.set(...position)
+    //   plane.rotation.set(...rotation)
+    //   scene.add(plane)
+    // }
+    // createPlane(0xff0000, [0, 0, 0], [Math.PI / 2, 0, 0]) // Red plane (X-Y)
+    // createPlane(0x00ff00, [0, 0, 0], [0, 0, 0]) // Green plane (Y-Z)
+    // createPlane(0xffff00, [0, 0, 0], [0, Math.PI / 2, 0]) // Yellow plane (X-Z)
 
     // Create a cube for reference
     const geometry = new THREE.BoxGeometry()
@@ -30,29 +65,42 @@ const RocketBox = ({ size }) => {
     const cube = new THREE.Mesh(geometry, material)
     scene.add(cube)
 
-    // Adjust camera distance for better viewing
-    camera.position.set(0, 40, 150) // Move camera further back to see more
+    // Position the camera
+    camera.position.set(x_cam, y_cam, z_cam)
+    camera.lookAt(0, 0, 0) // Ensure the camera is always looking at the center of the scene
 
-    let rocketModel // To reference the rocket model
-
-    // Load the GLTF model
+    let rocketModel
     const loader = new GLTFLoader()
     loader.load(
       RedRocket,
       (gltf) => {
         const model = gltf.scene
-        rocketModel = model // Store the rocket model for later access
+        rocketModel = model
 
         // Adjust scale and position
-        model.scale.set(5, 5, 5) // Scale up the model
-        model.position.set(0, 0, 0) // Ensure it's centered
+        model.scale.set(5, 5, 5)
+        // Center the model
+        const bbox2 = new THREE.Box3().setFromObject(model)
+        const center = bbox2.getCenter(new THREE.Vector3())
+        model.position.set(-center.x, -center.y, -center.z)
 
-        // Optional: Bounding box helper to check model's bounds
-        const bbox = new THREE.Box3().setFromObject(model)
-        const bboxHelper = new THREE.BoxHelper(model, 0xff0000)
-        scene.add(bboxHelper)
+        // Apply initial rotation using props
+        model.rotation.x = pitch; // Pitch rotation
+        model.rotation.y = yaw;   // Yaw rotation
+        model.rotation.z = roll;   // Roll rotation
 
-        console.log('Model bounding box:', bbox)
+        // Apply MeshBasicMaterial to all child meshes
+        // model.traverse((child) => {
+        //   if (child.isMesh) {
+        //     child.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
+        //   }
+        // })
+
+        // Bounding Box - Helper
+        // const bbox = new THREE.Box3().setFromObject(model)
+        // const bboxHelper = new THREE.BoxHelper(model, 0xff0000)
+        // scene.add(bboxHelper)
+        // console.log('Model bounding box:', bbox)
 
         scene.add(model)
       },
@@ -64,36 +112,33 @@ const RocketBox = ({ size }) => {
 
     // Handle resizing of the renderer
     const resizeRenderer = () => {
-      renderer.setSize(window.innerWidth, window.innerHeight)
-      camera.aspect = window.innerWidth / window.innerHeight
+      renderer.setSize(width, height)
+      camera.aspect = width / height
       camera.updateProjectionMatrix()
     }
 
     resizeRenderer()
     window.addEventListener('resize', resizeRenderer)
 
-    // Animation loop
     const animate = () => {
       requestAnimationFrame(animate)
 
       // Slowly rotate the rocket model along the x-axis if it's loaded
       if (rocketModel) {
-        rocketModel.rotation.x += 0.01 // Adjust speed here as needed
+        rocketModel.rotation.y += 0.001
       }
-
-      cube.rotation.x += 0.01
-      cube.rotation.y += 0.01
-
       renderer.render(scene, camera)
     }
     animate()
 
     return () => {
       renderer.dispose()
-      document.body.removeChild(renderer.domElement)
+      if (containerRef.current) {
+        containerRef.current.removeChild(renderer.domElement)
+      }
       window.removeEventListener('resize', resizeRenderer)
     }
-  }, [size])
+  }, [width, height, x_cam, y_cam, z_cam, roll, pitch, yaw, containerRef])
 
   return null
 }
