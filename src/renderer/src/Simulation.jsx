@@ -1,4 +1,4 @@
-import React, { useRef } from 'react' // Ensure useRef is imported
+import React, { useRef, useEffect, useState } from 'react' // Ensure useRef is imported
 import { useNavigate } from 'react-router-dom'
 import RocketBox from './components/RocketBox.jsx'
 import Chart from './components/Chart.jsx'
@@ -29,11 +29,30 @@ const SimulationScreen = () => {
   const threeDivRef2 = useRef(null)
   const threeDivRef3 = useRef(null)
 
+  const [data, setData] = useState(rocketDataMain)
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCount(count + 1)
+    }, 1000)
+
+    return () => clearInterval(id)
+  }, [count])
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setData(rocketDataMain)
+    }, 1000)
+
+    return () => clearInterval(id)
+  }, [data])
+
   return (
     <div style={simDivStyle}>
       <button onClick={handleMainWindow}>Back</button>
       <div className="threeDiv"></div>
-      <Chart rocketData = rocketDataMain/>
+      <Chart rocketData={data} current={count} />
     </div>
   )
 }
