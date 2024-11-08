@@ -1,4 +1,4 @@
-import React, { useRef } from 'react' // Ensure useRef is imported
+import React, { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import RocketBox from './components/RocketBox.jsx'
 import Chart from './components/Chart.jsx'
@@ -20,17 +20,16 @@ const SimulationScreen = () => {
     alignItems: 'center'
   }
 
-  // Define your desired roll, pitch, and yaw in radians
-  const roll = Math.PI / 4 // Example: 45 degrees in radians
-  const pitch = Math.PI / 6 // Example: 30 degrees in radians
-  const yaw = Math.PI / 3 // Example: 60 degrees in radians
+  const roll = Math.PI / 4 // 45 degrees (rad)
+  const pitch = Math.PI / 6 // 30 degrees (rad)
+  const yaw = Math.PI / 3 // 60 degrees (rad)
 
   const threeDivRef1 = useRef(null)
   const threeDivRef2 = useRef(null)
   const threeDivRef3 = useRef(null)
   const rocketBoxStyle = {
     width: 300,
-    height: 400,
+    height: 300
   }
 
   return (
@@ -42,7 +41,7 @@ const SimulationScreen = () => {
           {/* X-Y Plane */}
           <RocketBox containerRef={threeDivRef1} />
         </div>
-        <div ref={threeDivRef2} style={{ width: 300, height: 300 }}>
+        <div ref={threeDivRef2} style={rocketBoxStyle}>
           {/* X-Z Plane */}
           <RocketBox
             containerRef={threeDivRef2}
@@ -54,7 +53,7 @@ const SimulationScreen = () => {
             // yaw={yaw}
           />
         </div>
-        <div ref={threeDivRef3} style={{ width: 300, height: 300 }}>
+        <div ref={threeDivRef3} style={rocketBoxStyle}>
           {/* Y-Z Plane */}
           <RocketBox containerRef={threeDivRef3} x_cam={150} y_cam={0} z_cam={0} />
         </div>
