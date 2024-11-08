@@ -2,11 +2,19 @@ import { useNavigate } from "react-router-dom";
 import Background from "./components/Background.jsx";
 
 function App() {
-  const fileHandle = () => window.electron.ipcRenderer.send('file')
   const navigate = useNavigate();
   const goToSimulation = () => {
     navigate("/simulation");
   };
+
+  const handleFileOpen = async () => {
+    const selectedFile = await window.rocket.openFile()
+    if (selectedFile) {
+      console.log("Selected file path:", selectedFile)
+    } else {
+      alert("No file selected.")
+    }
+  }
 
   return (
     <>
@@ -18,7 +26,7 @@ function App() {
         <div className="action">
         </div>
         <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={fileHandle}>
+          <a target="_blank" rel="noreferrer" onClick={handleFileOpen}>
             Load
           </a>
         </div>

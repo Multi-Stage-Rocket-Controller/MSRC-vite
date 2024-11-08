@@ -54,14 +54,15 @@ app.whenReady().then(() => {
     }
   })
   // IPC File Explorer
-  ipcMain.handle('get-sim-file', async () => {
+  ipcMain.handle('select-file', async () => {
     const result = await dialog.showOpenDialog({
-      properties: ['openFile']
+      properties: ['openFile'],
+      filters: [{ name: 'JSON Files', extensions: ['json'] }]
     })
-    console.log('get-sim-file RESULT: ', result)
     if (!result.canceled && result.filePaths.length > 0) {
       return result.filePaths[0]
     }
+    return null // Return null if no file was selected
   })
 
   createWindow()
