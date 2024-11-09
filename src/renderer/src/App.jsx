@@ -6,6 +6,9 @@ function App() {
   const goToSimulation = () => {
     navigate("/simulation");
   };
+  const goToSandbox = () => {
+    navigate("/sandbox");
+  };
 
   const handleFileOpen = async () => {
     const selectedFile = await window.rocket.openFile()
@@ -33,6 +36,11 @@ function App() {
         <div className="action">
           <a target="_blank" rel="noreferrer" onClick={goToSimulation}>
             Simulation
+          </a>
+        </div>
+        <div className="action">
+          <a target="_blank" rel="noreferrer" onClick={goToSandbox}>
+            Sandbox
           </a>
         </div>
       </div>
