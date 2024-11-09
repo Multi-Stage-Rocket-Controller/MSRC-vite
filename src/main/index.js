@@ -43,16 +43,6 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('file', async (event) => {
-    console.log('in fileSearch')
-    const result = await dialog.showOpenDialog({
-      properties: ['openFile']
-    })
-    if (!result.canceled && result.filePaths.length > 0) {
-      event.sender.send('file-selected', result.filePaths[0])
-    }
-  })
   // IPC File Explorer
   ipcMain.handle('select-file', async () => {
     const result = await dialog.showOpenDialog({
