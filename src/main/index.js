@@ -1,7 +1,6 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
 import rocketIcon from '../../resources/rocket_icon.ico?asset'
 const { dialog } = require('electron')
 const fs = require('fs')
@@ -13,7 +12,6 @@ function createWindow() {
     icon: rocketIcon,
     show: false,
     autoHideMenuBar: true,
-    // ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -38,22 +36,14 @@ function createWindow() {
   }
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
-
-  // Default open or close DevTools by F12 in development
-  // and ignore CommandOrControl + R in production.
-  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
 
   // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
   ipcMain.on('file', async (event) => {
     console.log('in fileSearch')
     const result = await dialog.showOpenDialog({
@@ -63,20 +53,12 @@ app.whenReady().then(() => {
       event.sender.send('file-selected', result.filePaths[0])
     }
   })
-  ipcMain.on('file-open', (event, filePath) => {
-    fs.readFile(filePath, 'utf-8', (err, data) => {
-      if (err) {
-        console.error('File read error:', err)
-        return
-      }
-      event.sender.send('file-data', data) // Send file data back to renderer
-    })
-  })
-
-  ipcMain.handle('fileGet', async () => {
+  // IPC File Explorer
+  ipcMain.handle('get-sim-file', async () => {
     const result = await dialog.showOpenDialog({
       properties: ['openFile']
     })
+    console.log('get-sim-file RESULT: ', result)
     if (!result.canceled && result.filePaths.length > 0) {
       return result.filePaths[0]
     }
@@ -99,6 +81,3 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
-// In this file you can include the rest of your app"s specific main process
-// code. You can also put them in separate files and require them here.

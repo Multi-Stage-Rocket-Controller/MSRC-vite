@@ -20,6 +20,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
+    "@tsparticles/react": "^3.0.0",
     "chart.js": "^4.4.5",
     "electron-updater": "^6.1.7",
     "react-chartjs-2": "^5.2.0",
@@ -29,6 +30,7 @@
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^1.0.2",
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
+    "@tsparticles/slim": "^3.5.0",
     "@vitejs/plugin-react": "^4.3.1",
     "electron": "^31.0.2",
     "electron-builder": "^24.13.3",

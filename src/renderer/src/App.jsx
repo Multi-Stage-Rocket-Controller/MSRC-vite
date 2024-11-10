@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
+import Background from "./components/Background.jsx";
 
 function App() {
-  const ipcHandle = () => window.electron.ipcRenderer.send('ping')
   const fileHandle = () => window.electron.ipcRenderer.send('file')
   const navigate = useNavigate();
   const goToSimulation = () => {
@@ -10,17 +10,12 @@ function App() {
 
   return (
     <>
+      <Background />
       <div className="title">
         Rocket Visualizer
       </div>
-      <p className="tip">
-        Demo Version
-      </p>
       <div className="actions">
         <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Ping
-          </a>
         </div>
         <div className="action">
           <a target="_blank" rel="noreferrer" onClick={fileHandle}>
