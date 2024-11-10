@@ -1,9 +1,10 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect, useState } from 'react' // Ensure useRef is imported
 import { useNavigate } from 'react-router-dom'
 import RocketBox from './components/RocketBox.jsx'
 import Chart from './components/Chart.jsx'
 import Background from './components/Background.jsx'
 import './assets/simulation.css'
+import rocketDataMain from './utils/data.json'
 
 const SimulationScreen = () => {
   const navigate = useNavigate()
@@ -27,6 +28,26 @@ const SimulationScreen = () => {
   const threeDivRef1 = useRef(null)
   const threeDivRef2 = useRef(null)
   const threeDivRef3 = useRef(null)
+
+  const rocketData = Object.values(rocketDataMain)
+  const [data, setData] = useState(rocketData.splice(0, 1))
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCount(count + 1)
+    }, 1000)
+
+    return () => clearInterval(id)
+  }, [count])
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setData(rocketData.splice(0, 1 + count))
+    }, 1000)
+
+    return () => clearInterval(id)
+  }, [data])
   const rocketBoxStyle = {
     width: 300,
     height: 300
@@ -58,7 +79,8 @@ const SimulationScreen = () => {
           <RocketBox containerRef={threeDivRef3} x_cam={150} y_cam={0} z_cam={0} />
         </div>
       </div>
-      <Chart />
+      <div className="threeDiv"></div>
+      <Chart rocketData={data} current={count} />
     </div>
   )
 }
