@@ -1,8 +1,8 @@
 import { Chart as ChartJS } from 'chart.js/auto'
 import { Line } from 'react-chartjs-2'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
-const Chart = ({ rocketData = {}, current = 0 }) => {
+const Chart = ({ rocketData = [], current = 0 }) => {
   const labelArrayTotal = rocketData.map((data) => data.Timestamp)
   const rollRadiansTotal = rocketData.map((data) => data.Roll_Radians)
   const pitchRadiansTotal = rocketData.map((data) => data.Pitch_Radians)

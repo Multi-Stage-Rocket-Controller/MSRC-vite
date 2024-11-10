@@ -29,7 +29,8 @@ const SimulationScreen = () => {
   const threeDivRef2 = useRef(null)
   const threeDivRef3 = useRef(null)
 
-  const [data, setData] = useState(rocketDataMain)
+  const rocketData = Object.values(rocketDataMain)
+  const [data, setData] = useState(rocketData.splice(0, 1))
   const [count, setCount] = useState(0)
 
   useEffect(() => {
@@ -42,7 +43,7 @@ const SimulationScreen = () => {
 
   useEffect(() => {
     const id = setInterval(() => {
-      setData(rocketDataMain)
+      setData(rocketData.splice(0, 1 + count))
     }, 1000)
 
     return () => clearInterval(id)
