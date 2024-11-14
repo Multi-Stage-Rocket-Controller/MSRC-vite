@@ -6,7 +6,7 @@ import App from './App'
 import SimulationScreen from './Simulation'
 import Sandbox from './Sandbox'
 import { HashRouter, Route, Routes } from 'react-router-dom'
-import { DataProvider } from './DataContent'
+import { DataProvider } from './DataContext'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
