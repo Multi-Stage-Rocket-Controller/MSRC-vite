@@ -1,9 +1,12 @@
+// Main/index.js-1
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import rocketIcon from '../../resources/rocket_icon.ico?asset'
 const { dialog } = require('electron')
 const fs = require('fs')
+
+let loadedJSONData = null
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -27,8 +30,6 @@ function createWindow() {
     return { action: 'deny' }
   })
 
-  // HMR for renderer base on electron-vite cli.
-  // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
@@ -37,7 +38,6 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
@@ -55,18 +55,30 @@ app.whenReady().then(() => {
     return null // Return null if no file was selected
   })
 
+  // IPC Load JSON
+  ipcMain.handle('load-json', async (event, filePath) => {
+    try {
+      const data = fs.readFileSync(filePath, 'utf-8')
+      loadedJSONData = JSON.parse(data)
+      return loadedJSONData
+    } catch (error) {
+      console.error('Error loading JSON:', error)
+      return null
+    }
+  })
+
+  // IPC Get JSON Data
+  ipcMain.on('get-json-data', (event) => {
+    event.returnValue = loadedJSONData
+  })
+
   createWindow()
 
   app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 })
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
