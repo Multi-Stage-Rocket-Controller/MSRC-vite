@@ -3,14 +3,15 @@ import { useNavigate } from 'react-router-dom'
 import RocketBox from './components/RocketBox.jsx'
 import Chart from './components/Chart.jsx'
 import Background from './components/Background.jsx'
+import { DataContext } from './DataContext'
 import './assets/simulation.css'
 import rocketDataMain from './utils/data.json'
 
 const SimulationScreen = () => {
   const navigate = useNavigate()
-  const handleMainWindow = () => {
-    navigate('/')
-  }
+  const { jsonData } = useContext(DataContext)
+  const handleMainWindow = () => navigate('/')
+  
   const modelValueStyle = {
     display: 'flex',
     justifyContent: 'space-around',
