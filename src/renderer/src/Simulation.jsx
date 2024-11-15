@@ -25,7 +25,7 @@ const SimulationScreen = () => {
 
   useEffect(() => {
     const id = setInterval(() => {
-      setCount(prevCount => prevCount + 1)
+      setCount((prevCount) => prevCount + 1)
     }, 1000)
 
     return () => clearInterval(id)
@@ -33,7 +33,7 @@ const SimulationScreen = () => {
 
   useEffect(() => {
     if (jsonData && count < jsonData.length) {
-      setData(prevData => [...prevData, jsonData[count]])
+      setData((prevData) => [...prevData, jsonData[count]])
     }
   }, [count, jsonData])
 
@@ -47,18 +47,25 @@ const SimulationScreen = () => {
       <button onClick={handleMainWindow}>Back</button>
       <div className="threeDiv">
         <div ref={threeDivRef1} style={rocketBoxStyle}>
-          <RocketBox containerRef={threeDivRef1} />
+          <RocketBox containerRef={threeDivRef1} data={data} current={count} />
         </div>
         <div ref={threeDivRef2} style={rocketBoxStyle}>
           <RocketBox
             containerRef={threeDivRef2}
-            x_cam={0}
             y_cam={150}
             z_cam={0}
+            data={data}
+            current={count}
           />
         </div>
         <div ref={threeDivRef3} style={rocketBoxStyle}>
-          <RocketBox containerRef={threeDivRef3} x_cam={150} y_cam={0} z_cam={0} />
+          <RocketBox
+            containerRef={threeDivRef3}
+            x_cam={150}
+            z_cam={0}
+            data={data}
+            current={count}
+          />
         </div>
       </div>
       <Chart rocketData={data} current={count} />

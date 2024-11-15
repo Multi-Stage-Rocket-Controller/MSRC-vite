@@ -9,12 +9,18 @@ const RocketBox = ({
   x_cam = 0,
   y_cam = 0,
   z_cam = 150,
-  roll = 0,    // Added roll prop
-  pitch = 0,   // Added pitch prop
-  yaw = 0,     // Added yaw prop
+  roll = 0,
+  pitch = 0,
+  yaw = 0,
+  data = [],
+  current = 0,
   containerRef
 }) => {
   useEffect(() => {
+    const totalYaw = data.map((data) => data.Yaw_Radians)
+    const totalPitch = data.map((data) => data.Pitch_Radians)
+    const totalRoll = data.map((data) => data.Roll_Radians)
+
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000)
     const renderer = new THREE.WebGLRenderer({ antialias: true })
@@ -59,12 +65,6 @@ const RocketBox = ({
     // createPlane(0x00ff00, [0, 0, 0], [0, 0, 0]) // Green plane (Y-Z)
     // createPlane(0xffff00, [0, 0, 0], [0, Math.PI / 2, 0]) // Yellow plane (X-Z)
 
-    // Create a cube for reference
-    const geometry = new THREE.BoxGeometry()
-    const material = new THREE.MeshBasicMaterial({ color: 0x033ff0 })
-    const cube = new THREE.Mesh(geometry, material)
-    scene.add(cube)
-
     // Position the camera
     camera.position.set(x_cam, y_cam, z_cam)
     camera.lookAt(0, 0, 0) // Ensure the camera is always looking at the center of the scene
@@ -85,16 +85,16 @@ const RocketBox = ({
         model.position.set(-center.x, -center.y, -center.z)
 
         // Apply initial rotation using props
-        model.rotation.x = pitch; // Pitch rotation
-        model.rotation.y = yaw;   // Yaw rotation
-        model.rotation.z = roll;   // Roll rotation
+        model.rotation.x = totalPitch[current]; // Pitch rotation
+        model.rotation.y = totalYaw[current];   // Yaw rotation
+        model.rotation.z = totalRoll[current];   // Roll rotation
 
         // Apply MeshBasicMaterial to all child meshes
-        // model.traverse((child) => {
-        //   if (child.isMesh) {
-        //     child.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
-        //   }
-        // })
+        model.traverse((child) => {
+          if (child.isMesh) {
+            child.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
+          }
+        })
 
         // Bounding Box - Helper
         // const bbox = new THREE.Box3().setFromObject(model)
@@ -124,9 +124,9 @@ const RocketBox = ({
       requestAnimationFrame(animate)
 
       // Slowly rotate the rocket model along the x-axis if it's loaded
-      if (rocketModel) {
-        rocketModel.rotation.y += 0.001
-      }
+      // if (rocketModel) {
+      //   rocketModel.rotation.y += 0.001
+      // }
       renderer.render(scene, camera)
     }
     animate()
@@ -138,7 +138,7 @@ const RocketBox = ({
       }
       window.removeEventListener('resize', resizeRenderer)
     }
-  }, [width, height, x_cam, y_cam, z_cam, roll, pitch, yaw, containerRef])
+  }, [width, height, x_cam, y_cam, z_cam, roll, pitch, yaw,, current, containerRef])
 
   return null
 }
