@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import RocketBox from './components/RocketBox.jsx'
 import Chart from './components/Chart.jsx'
-import Background from './components/Background.jsx'
 import { DataContext } from './DataContext'
 import './assets/simulation.css'
 

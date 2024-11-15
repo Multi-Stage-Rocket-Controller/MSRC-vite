@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
 import { useNavigate } from "react-router-dom";
-import Background from "./components/Background.jsx";
 import { DataContext } from './DataContext.jsx'
 
 function App() {
