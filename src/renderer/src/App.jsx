@@ -28,7 +28,6 @@ function App() {
 
   return (
     <>
-      <Background />
       <div className="title">
         Rocket Visualizer
       </div>

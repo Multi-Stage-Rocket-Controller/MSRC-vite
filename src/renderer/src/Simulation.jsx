@@ -44,7 +44,6 @@ const SimulationScreen = () => {
 
   return (
     <div style={simDivStyle}>
-      <Background />
       <button onClick={handleMainWindow}>Back</button>
       <div className="threeDiv">
         <div ref={threeDivRef1} style={rocketBoxStyle}>
