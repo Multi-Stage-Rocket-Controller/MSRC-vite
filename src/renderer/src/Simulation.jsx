@@ -6,19 +6,7 @@ import { DataContext } from './DataContext'
 import './assets/simulation.css'
 
 const SimulationScreen = () => {
-  const navigate = useNavigate()
   const { jsonData } = useContext(DataContext)
-  const handleMainWindow = () => navigate('/')
-
-  const simDivStyle = {
-    display: 'grid',
-    alignItems: 'center'
-  }
-
-  const threeDivRef1 = useRef(null)
-  const threeDivRef2 = useRef(null)
-  const threeDivRef3 = useRef(null)
-
   const [data, setData] = useState(jsonData ? [jsonData[0]] : [])
   const [count, setCount] = useState(0)
 
@@ -36,6 +24,16 @@ const SimulationScreen = () => {
     }
   }, [count, jsonData])
 
+  const navigate = useNavigate()
+  const handleMainWindow = () => navigate('/')
+
+  const threeDivRef1 = useRef(null)
+  const threeDivRef2 = useRef(null)
+  const threeDivRef3 = useRef(null)
+  const simDivStyle = {
+    display: 'grid',
+    alignItems: 'center'
+  }
   const rocketBoxStyle = {
     width: 300,
     height: 300

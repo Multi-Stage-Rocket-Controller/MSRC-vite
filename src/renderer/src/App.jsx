@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { DataContext } from './DataContext.jsx'
 
 function App() {
-  const navigate = useNavigate();
   const { jsonData, setJsonData } = useContext(DataContext) // Consume the context
   console.log("App Component - jsonData:", jsonData) // Log jsonData
-
+  
+  const navigate = useNavigate();
   const goToSimulation = () => { navigate("/simulation"); };
   const goToSandbox = () => { navigate("/sandbox"); };
 
