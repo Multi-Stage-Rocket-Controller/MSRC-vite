@@ -1,17 +1,18 @@
 import { Chart as ChartJS } from 'chart.js/auto'
 import { Line } from 'react-chartjs-2'
 import React, { useEffect, useRef, useState } from 'react'
+import '../assets/chart.css'
 
 const Chart = ({ rocketData = [], current = 0 }) => {
-  const labelArrayTotal = rocketData.map((data) => data.Timestamp)
-  const rollRadiansTotal = rocketData.map((data) => data.Roll_Radians)
-  const pitchRadiansTotal = rocketData.map((data) => data.Pitch_Radians)
-  const yawRadiansTotal = rocketData.map((data) => data.Yaw_Radians)
-  const latitudeTotal = rocketData.map((data) => data.Latitude)
-  const longitudeTotal = rocketData.map((data) => data.Longitude)
-  const accelerationDataTotal = rocketData.map((data) => data.Acc_Net)
-  const altitudeTotal = rocketData.map((data) => data.Altitude)
-  const voltageTotaL = rocketData.map((data) => data.Voltage)
+  var labelArrayTotal = rocketData.map((data) => data.Timestamp)
+  var rollRadiansTotal = rocketData.map((data) => data.Roll_Radians)
+  var pitchRadiansTotal = rocketData.map((data) => data.Pitch_Radians)
+  var yawRadiansTotal = rocketData.map((data) => data.Yaw_Radians)
+  var latitudeTotal = rocketData.map((data) => data.Latitude)
+  var longitudeTotal = rocketData.map((data) => data.Longitude)
+  var accelerationDataTotal = rocketData.map((data) => data.Acc_Net)
+  var altitudeTotal = rocketData.map((data) => data.Altitude)
+  var voltageTotal = rocketData.map((data) => data.Voltage)
 
   // const [count, setCount] = useState(0)
 
@@ -22,100 +23,316 @@ const Chart = ({ rocketData = [], current = 0 }) => {
   }
 
   return (
-    <div style={{ display: 'flex' }}>
-      <div style={{ flex: 1 }}>
-        <ul>
-          <li> Current Roll_Radians: {rollRadiansTotal[current]} </li>
-          <li> Current Pitch_Radians: {pitchRadiansTotal[current]} </li>
-          <li> Current Yaw_Radians: {yawRadiansTotal[current]} </li>
-          <li> Current Latitude: {latitudeTotal[current]} </li>
-          <li> Current Longitude: {longitudeTotal[current]} </li>
-          <li> Current Acceleration: {accelerationDataTotal[current]} </li>
-          <li> Current Altitude: {altitudeTotal[current]} </li>
-          <li> Current Voltage: {voltageTotaL[current]} </li>
-          <li> Time Elapsed: {labelArrayTotal[current]} </li>
-        </ul>
+    <div class="bottom-container">
+      <div class="bottom-box left-box">
+        <div class="section" onClick={() => handleTabClick(0)}>
+          Current Roll_Radians: {rollRadiansTotal[rollRadiansTotal.length - 1]}
+        </div>
+        <div class="section" onClick={() => handleTabClick(1)}>
+          Current Pitch_Radians: {pitchRadiansTotal[pitchRadiansTotal.length - 1]}
+        </div>
+        <div class="section" onClick={() => handleTabClick(2)}>
+          Current Yaw_Radians: {yawRadiansTotal[yawRadiansTotal.length - 1]}
+        </div>
+        <div class="section" onClick={() => handleTabClick(3)}>
+          Current Latitude: {latitudeTotal[latitudeTotal.length - 1]}
+        </div>
+        <div class="section" onClick={() => handleTabClick(4)}>
+          Current Longitude: {longitudeTotal[longitudeTotal.length - 1]}
+        </div>
+        <div class="section" onClick={() => handleTabClick(5)}>
+          Current Acceleration: {accelerationDataTotal[accelerationDataTotal.length - 1]}
+        </div>
+        <div class="section" onClick={() => handleTabClick(6)}>
+          Current Altitude: {altitudeTotal[altitudeTotal.length - 1]}
+        </div>
+        <div class="section" onClick={() => handleTabClick(7)}>
+          Current Voltage: {voltageTotal[voltageTotal.length - 1]}
+        </div>
       </div>
-      <div>
-        <div style={{ flex: 1 }} className="side-tabs">
-          <ul style={{ backgroundColor: '#333333' }} className="tab-list">
-            <li
-              style={{ float: 'left', display: 'block' }}
-              onClick={() => handleTabClick(0)}
-              className={activeTab === 0 ? 'active' : ''}
-            >
-              Roll Radians
-            </li>
-            <li
-              style={{ float: 'left', display: 'block' }}
-              onClick={() => handleTabClick(1)}
-              className={activeTab === 1 ? 'active' : ''}
-            >
-              Pitch Radians
-            </li>
-            <li
-              style={{ float: 'left', display: 'block' }}
-              onClick={() => handleTabClick(2)}
-              className={activeTab === 2 ? 'active' : ''}
-            >
-              Yaw Radians
-            </li>
-            {/* Add more tabs as needed */}
-          </ul>
-          <div style={{ flex: 1 }} className="tab-content">
-            {activeTab === 0 && (
-              <div>
-                <Line
-                  data={{
-                    labels: labelArrayTotal,
-                    datasets: [
-                      {
-                        label: 'Roll Radians',
-                        data: rollRadiansTotal,
-                        backgroundColor: '#064FF0',
-                        borderColor: '#064FF0'
+      <div class="bottom-box">
+        <div style={{ flex: 1 }} className="tab-content">
+          {activeTab === 0 && (
+            <div>
+              <Line
+                data={{
+                  labels: labelArrayTotal,
+                  datasets: [
+                    {
+                      label: 'Roll Radians',
+                      data: rollRadiansTotal,
+                      borderColor: '#FFFFFF'
+                    }
+                  ]
+                }}
+                options={{
+                  plugins: {
+                    // changin the lagend colour
+                    legend: {
+                      labels: {
+                        color: 'white'
                       }
-                    ]
-                  }}
-                />
-              </div>
-            )}
-            {activeTab === 1 && (
-              <div>
-                <Line
-                  data={{
-                    labels: labelArrayTotal,
-                    datasets: [
-                      {
-                        label: 'Pitch Radians',
-                        data: pitchRadiansTotal,
-                        backgroundColor: '#064FF0',
-                        borderColor: '#064FF0'
+                    }
+                  },
+                  // Changing the label colour
+                  scales: {
+                    y: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    },
+                    x: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    }
+                  }
+                }}
+              />
+            </div>
+          )}
+          {activeTab === 1 && (
+            <div>
+              <Line
+                data={{
+                  labels: labelArrayTotal,
+                  datasets: [
+                    {
+                      label: 'Pitch Radians',
+                      data: pitchRadiansTotal,
+                      borderColor: '#FFFFFF'
+                    }
+                  ]
+                }}
+                options={{
+                  plugins: {
+                    // changin the lagend colour
+                    legend: {
+                      labels: {
+                        color: 'white'
                       }
-                    ]
-                  }}
-                />
-              </div>
-            )}
-            {activeTab === 2 && (
-              <div>
-                <Line
-                  data={{
-                    labels: labelArrayTotal,
-                    datasets: [
-                      {
-                        label: 'Yaw Radians',
-                        data: yawRadiansTotal,
-                        backgroundColor: '#064FF0',
-                        borderColor: '#064FF0'
+                    }
+                  },
+                  // Changing the label colour
+                  scales: {
+                    y: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    },
+                    x: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    }
+                  }
+                }}
+              />
+            </div>
+          )}
+          {activeTab === 2 && (
+            <div>
+              <Line
+                data={{
+                  labels: labelArrayTotal,
+                  datasets: [
+                    {
+                      label: 'Yaw Radians',
+                      data: yawRadiansTotal,
+                      borderColor: '#FFFFFF'
+                    }
+                  ]
+                }}
+                options={{
+                  plugins: {
+                    // changin the lagend colour
+                    legend: {
+                      labels: {
+                        color: 'white'
                       }
-                    ]
-                  }}
-                />
-              </div>
-            )}
-            {/* Render content based on the active tab */}
-          </div>
+                    }
+                  },
+                  // Changing the label colour
+                  scales: {
+                    y: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    },
+                    x: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    }
+                  }
+                }}
+              />
+            </div>
+          )}
+          {activeTab === 3 && (
+            <div>
+              <Line
+                data={{
+                  labels: labelArrayTotal,
+                  datasets: [
+                    {
+                      label: 'Latitude',
+                      data: latitudeTotal,
+                      borderColor: '#FFFFFF'
+                    }
+                  ]
+                }}
+                options={{
+                  plugins: {
+                    // changin the lagend colour
+                    legend: {
+                      labels: {
+                        color: 'white'
+                      }
+                    }
+                  },
+                  // Changing the label colour
+                  scales: {
+                    y: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    },
+                    x: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    }
+                  }
+                }}
+              />
+            </div>
+          )}
+          {activeTab === 4 && (
+            <div>
+              <Line
+                data={{
+                  labels: labelArrayTotal,
+                  datasets: [
+                    {
+                      label: 'Longitude',
+                      data: longitudeTotal,
+                      borderColor: '#FFFFFF'
+                    }
+                  ]
+                }}
+                options={{
+                  plugins: {
+                    // changin the lagend colour
+                    legend: {
+                      labels: {
+                        color: 'white'
+                      }
+                    }
+                  },
+                  // Changing the label colour
+                  scales: {
+                    y: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    },
+                    x: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    }
+                  }
+                }}
+              />
+            </div>
+          )}
+          {activeTab === 5 && (
+            <div>
+              <Line
+                data={{
+                  labels: labelArrayTotal,
+                  datasets: [
+                    {
+                      label: 'Acceleration',
+                      data: accelerationDataTotal,
+                      borderColor: '#FFFFFF'
+                    }
+                  ]
+                }}
+                options={{
+                  plugins: {
+                    // changin the lagend colour
+                    legend: {
+                      labels: {
+                        color: 'white'
+                      }
+                    }
+                  },
+                  // Changing the label colour
+                  scales: {
+                    y: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    },
+                    x: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    }
+                  }
+                }}
+              />
+            </div>
+          )}
+          {activeTab === 6 && (
+            <div>
+              <Line
+                data={{
+                  labels: labelArrayTotal,
+                  datasets: [
+                    {
+                      label: 'Altitude',
+                      data: altitudeTotal,
+                      borderColor: '#FFFFFF'
+                    }
+                  ]
+                }}
+                options={{
+                  plugins: {
+                    // changin the lagend colour
+                    legend: {
+                      labels: {
+                        color: 'white'
+                      }
+                    }
+                  },
+                  // Changing the label colour
+                  scales: {
+                    y: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    },
+                    x: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    }
+                  }
+                }}
+              />
+            </div>
+          )}
+          {activeTab === 7 && (
+            <div>
+              <Line
+                data={{
+                  labels: labelArrayTotal,
+                  datasets: [
+                    {
+                      label: 'Voltage',
+                      data: voltageTotal,
+                      borderColor: '#FFFFFF'
+                    }
+                  ]
+                }}
+                options={{
+                  plugins: {
+                    // changin the lagend colour
+                    legend: {
+                      labels: {
+                        color: 'white'
+                      }
+                    }
+                  },
+                  // Changing the label colour
+                  scales: {
+                    y: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    },
+                    x: {
+                      ticks: { color: 'white', beginAtZero: true }
+                    }
+                  }
+                }}
+              />
+            </div>
+          )}
+          {/* Render content based on the active tab */}
         </div>
       </div>
     </div>
