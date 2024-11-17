@@ -26,13 +26,13 @@ const Chart = ({ rocketData = [], current = 0 }) => {
     <div class="bottom-container">
       <div class="bottom-box left-box">
         <div class="section" onClick={() => handleTabClick(0)}>
-          Current Roll_Radians: {rollRadiansTotal[rollRadiansTotal.length - 1]}
+          Current Roll: {rollRadiansTotal[rollRadiansTotal.length - 1]}
         </div>
         <div class="section" onClick={() => handleTabClick(1)}>
-          Current Pitch_Radians: {pitchRadiansTotal[pitchRadiansTotal.length - 1]}
+          Current Pitch: {pitchRadiansTotal[pitchRadiansTotal.length - 1]}
         </div>
         <div class="section" onClick={() => handleTabClick(2)}>
-          Current Yaw_Radians: {yawRadiansTotal[yawRadiansTotal.length - 1]}
+          Current Yaw: {yawRadiansTotal[yawRadiansTotal.length - 1]}
         </div>
         <div class="section" onClick={() => handleTabClick(3)}>
           Current Latitude: {latitudeTotal[latitudeTotal.length - 1]}
