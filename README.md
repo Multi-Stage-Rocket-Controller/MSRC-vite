@@ -2,12 +2,12 @@
 
 ## Installation Instructions
 >[!WARNING]
-> You will need to have two terminals open. One for the "server" (`Serial.py`) and the other will be for the application. This [requires the newest version of Python](https://www.python.org/downloads/).
+> You will need to have two terminals open. One for the WebSocket server (`Serial.py`) and the other will be for the application. This [requires the newest version of Python](https://www.python.org/downloads/).
 
 ```
 npm i
 ```
-This will install all dependencies for the application. To run the server script, you will need to do the following:
+This will install all dependencies for the application. To run the WebSocket server script, you will need to do the following:
 ```
 cd ./src/main/
 pip install -r requirements.txt
