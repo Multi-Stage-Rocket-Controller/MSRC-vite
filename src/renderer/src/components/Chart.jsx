@@ -23,34 +23,34 @@ const Chart = ({ rocketData = [], current = 0 }) => {
   }
 
   return (
-    <div class="bottom-container">
-      <div class="bottom-box left-box">
-        <div class="section" onClick={() => handleTabClick(0)}>
+    <div className="bottom-container">
+      <div className="bottom-box left-box">
+        <div className="section" onClick={() => handleTabClick(0)}>
           Current Roll: {rollRadiansTotal[rollRadiansTotal.length - 1]}
         </div>
-        <div class="section" onClick={() => handleTabClick(1)}>
+        <div className="section" onClick={() => handleTabClick(1)}>
           Current Pitch: {pitchRadiansTotal[pitchRadiansTotal.length - 1]}
         </div>
-        <div class="section" onClick={() => handleTabClick(2)}>
+        <div className="section" onClick={() => handleTabClick(2)}>
           Current Yaw: {yawRadiansTotal[yawRadiansTotal.length - 1]}
         </div>
-        <div class="section" onClick={() => handleTabClick(3)}>
+        <div className="section" onClick={() => handleTabClick(3)}>
           Current Latitude: {latitudeTotal[latitudeTotal.length - 1]}
         </div>
-        <div class="section" onClick={() => handleTabClick(4)}>
+        <div className="section" onClick={() => handleTabClick(4)}>
           Current Longitude: {longitudeTotal[longitudeTotal.length - 1]}
         </div>
-        <div class="section" onClick={() => handleTabClick(5)}>
+        <div className="section" onClick={() => handleTabClick(5)}>
           Current Acceleration: {accelerationDataTotal[accelerationDataTotal.length - 1]}
         </div>
-        <div class="section" onClick={() => handleTabClick(6)}>
+        <div className="section" onClick={() => handleTabClick(6)}>
           Current Altitude: {altitudeTotal[altitudeTotal.length - 1]}
         </div>
-        <div class="section" onClick={() => handleTabClick(7)}>
+        <div className="section" onClick={() => handleTabClick(7)}>
           Current Voltage: {voltageTotal[voltageTotal.length - 1]}
         </div>
       </div>
-      <div class="bottom-box">
+      <div className="bottom-box">
         <div style={{ flex: 1 }} className="tab-content">
           {activeTab === 0 && (
             <div>
