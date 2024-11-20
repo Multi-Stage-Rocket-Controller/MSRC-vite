@@ -1,146 +1,169 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import * as THREE from 'three'
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import RedRocket from '../assets/red_rocket.glb'
 
 const RocketBox = ({
-  width = 300,
+  width = 900,
   height = 300,
-  x_cam = 0,
-  y_cam = 0,
-  z_cam = 150,
-  roll = 0,    // Added roll prop
-  pitch = 0,   // Added pitch prop
-  yaw = 0,     // Added yaw prop
-  containerRef
+  initialOrientation = { x: 0, y: 0, z: 0 },
+  orientationQueue = [], // Array of target orientations
 }) => {
+  const containerRef = useRef(null)
+  const sceneRef = useRef(null)
+  const rendererRef = useRef(null)
+  const camerasRef = useRef({})
+  const rocketRef = useRef(null)
+  const animationRef = useRef(null)
+  const currentOrientation = useRef(initialOrientation)
+  const targetOrientations = useRef([...orientationQueue])
+
   useEffect(() => {
+    // Initialize Scene
     const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000)
+    sceneRef.current = scene
+
+    // Initialize Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true })
     renderer.setSize(width, height)
+    renderer.setPixelRatio(window.devicePixelRatio)
+    rendererRef.current = renderer
+    containerRef.current.appendChild(renderer.domElement)
 
-    // Append renderer to the container div
-    if (containerRef.current) {
-      containerRef.current.appendChild(renderer.domElement)
-    }
-
-    // Lighting - need all for full illumination
-    const ambientLight = new THREE.AmbientLight(0xffffff, 10)
+    // Add Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1)
     scene.add(ambientLight)
-    const strongLight = new THREE.DirectionalLight(0xffffff, 5)
-    strongLight.position.set(0, 100, 100).normalize()
-    scene.add(strongLight)
-    const strongLight2 = new THREE.DirectionalLight(0xffffff, 5)
-    strongLight2.position.set(100, 0, 100).normalize()
-    scene.add(strongLight2)
-    const strongLight3 = new THREE.DirectionalLight(0xffffff, 5)
-    strongLight3.position.set(100, 100, 0).normalize()
-    scene.add(strongLight3)
-    const strongLight4 = new THREE.DirectionalLight(0xffffff, 5)
-    strongLight4.position.set(0, 100, 0).normalize()
-    scene.add(strongLight4)
 
-    // Create planes -- helper function
-    // const createPlane = (color, position, rotation) => {
-    //   const planeGeometry = new THREE.PlaneGeometry(200, 200) // Adjust size as needed
-    //   const planeMaterial = new THREE.MeshBasicMaterial({
-    //     color: color,
-    //     side: THREE.DoubleSide,
-    //     transparent: true,
-    //     opacity: 0.5
-    //   }) // Make planes transparent
-    //   const plane = new THREE.Mesh(planeGeometry, planeMaterial)
-    //   plane.position.set(...position)
-    //   plane.rotation.set(...rotation)
-    //   scene.add(plane)
-    // }
-    // createPlane(0xff0000, [0, 0, 0], [Math.PI / 2, 0, 0]) // Red plane (X-Y)
-    // createPlane(0x00ff00, [0, 0, 0], [0, 0, 0]) // Green plane (Y-Z)
-    // createPlane(0xffff00, [0, 0, 0], [0, Math.PI / 2, 0]) // Yellow plane (X-Z)
+    const directionalLights = [
+      { position: [0, 100, 100], intensity: 5 },
+      { position: [100, 0, 100], intensity: 5 },
+      { position: [100, 100, 0], intensity: 5 },
+      { position: [0, 100, 0], intensity: 5 },
+    ]
 
-    // Create a cube for reference
-    const geometry = new THREE.BoxGeometry()
-    const material = new THREE.MeshBasicMaterial({ color: 0x033ff0 })
-    const cube = new THREE.Mesh(geometry, material)
-    scene.add(cube)
+    directionalLights.forEach(lightInfo => {
+      const light = new THREE.DirectionalLight(0xffffff, lightInfo.intensity)
+      light.position.set(...lightInfo.position).normalize()
+      scene.add(light)
+    })
 
-    // Position the camera
-    camera.position.set(x_cam, y_cam, z_cam)
-    camera.lookAt(0, 0, 0) // Ensure the camera is always looking at the center of the scene
+    // Initialize Cameras
+    const aspect = (width / 3) / height
+    camerasRef.current.xy = new THREE.PerspectiveCamera(50, aspect, 0.1, 1000)
+    camerasRef.current.xy.position.set(0, 0, 150)
+    camerasRef.current.xy.lookAt(0, 0, 0)
 
-    let rocketModel
+    camerasRef.current.yz = new THREE.PerspectiveCamera(50, aspect, 0.1, 1000)
+    camerasRef.current.yz.position.set(150, 0, 0)
+    camerasRef.current.yz.lookAt(0, 0, 0)
+
+    camerasRef.current.xz = new THREE.PerspectiveCamera(50, aspect, 0.1, 1000)
+    camerasRef.current.xz.position.set(0, 150, 0)
+    camerasRef.current.xz.lookAt(0, 0, 0)
+
+    // Load Rocket Model
     const loader = new GLTFLoader()
     loader.load(
       RedRocket,
-      (gltf) => {
+      gltf => {
         const model = gltf.scene
-        rocketModel = model
-
-        // Adjust scale and position
+        rocketRef.current = model
         model.scale.set(5, 5, 5)
+        model.rotation.set(initialOrientation.x, initialOrientation.y, initialOrientation.z)
+
         // Center the model
-        const bbox2 = new THREE.Box3().setFromObject(model)
-        const center = bbox2.getCenter(new THREE.Vector3())
-        model.position.set(-center.x, -center.y, -center.z)
-
-        // Apply initial rotation using props
-        model.rotation.x = pitch; // Pitch rotation
-        model.rotation.y = yaw;   // Yaw rotation
-        model.rotation.z = roll;   // Roll rotation
-
-        // Apply MeshBasicMaterial to all child meshes
-        // model.traverse((child) => {
-        //   if (child.isMesh) {
-        //     child.material = new THREE.MeshBasicMaterial({ color: 0xffffff })
-        //   }
-        // })
-
-        // Bounding Box - Helper
-        // const bbox = new THREE.Box3().setFromObject(model)
-        // const bboxHelper = new THREE.BoxHelper(model, 0xff0000)
-        // scene.add(bboxHelper)
-        // console.log('Model bounding box:', bbox)
+        const bbox = new THREE.Box3().setFromObject(model)
+        const center = bbox.getCenter(new THREE.Vector3())
+        model.position.sub(center)
 
         scene.add(model)
       },
       undefined,
-      (error) => {
-        console.error('Error loading GLTF model:', error)
-      }
+      error => console.error('Error loading model:', error)
     )
 
-    // Handle resizing of the renderer
-    const resizeRenderer = () => {
-      renderer.setSize(width, height)
-      camera.aspect = width / height
-      camera.updateProjectionMatrix()
-    }
-
-    resizeRenderer()
-    window.addEventListener('resize', resizeRenderer)
-
+    // Render Function
     const animate = () => {
-      requestAnimationFrame(animate)
+      animationRef.current = requestAnimationFrame(animate)
+      renderer.clear()
 
-      // Slowly rotate the rocket model along the x-axis if it's loaded
-      if (rocketModel) {
-        rocketModel.rotation.y += 0.001
-      }
-      renderer.render(scene, camera)
+      const viewports = [
+        { x: 0, y: 0, width: width / 3, height },
+        { x: width / 3, y: 0, width: width / 3, height },
+        { x: (2 * width) / 3, y: 0, width: width / 3, height },
+      ]
+
+      const cameraKeys = ['xy', 'yz', 'xz']
+
+      viewports.forEach((vp, index) => {
+        renderer.setViewport(vp.x, vp.y, vp.width, vp.height)
+        renderer.setScissor(vp.x, vp.y, vp.width, vp.height)
+        renderer.setScissorTest(true)
+        renderer.render(scene, camerasRef.current[cameraKeys[index]])
+      })
+
+      updateAnimation()
     }
     animate()
 
+    // Handle Window Resize
+    const handleResize = () => {
+      const newWidth = containerRef.current.clientWidth
+      const newHeight = containerRef.current.clientHeight
+      renderer.setSize(newWidth, newHeight)
+
+      const newAspect = (newWidth / 3) / newHeight
+      Object.values(camerasRef.current).forEach(camera => {
+        camera.aspect = newAspect
+        camera.updateProjectionMatrix()
+      })
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    // Cleanup
     return () => {
+      cancelAnimationFrame(animationRef.current)
+      window.removeEventListener('resize', handleResize)
       renderer.dispose()
       if (containerRef.current) {
         containerRef.current.removeChild(renderer.domElement)
       }
-      window.removeEventListener('resize', resizeRenderer)
     }
-  }, [width, height, x_cam, y_cam, z_cam, roll, pitch, yaw, containerRef])
+  }, [width, height, initialOrientation])
 
-  return null
+  useEffect(() => {
+    targetOrientations.current.push(...orientationQueue)
+  }, [orientationQueue])
+
+  const updateAnimation = () => {
+    if (!rocketRef.current || targetOrientations.current.length === 0) return
+
+    const target = targetOrientations.current[0]
+    const speed = 0.02
+
+    // Interpolate rotation
+    currentOrientation.current.x += (target.x - currentOrientation.current.x) * speed
+    currentOrientation.current.y += (target.y - currentOrientation.current.y) * speed
+    currentOrientation.current.z += (target.z - currentOrientation.current.z) * speed
+
+    rocketRef.current.rotation.set(
+      currentOrientation.current.x,
+      currentOrientation.current.y,
+      currentOrientation.current.z
+    )
+
+    // Check if rotation is close to target
+    if (
+      Math.abs(target.x - currentOrientation.current.x) < 0.01 &&
+      Math.abs(target.y - currentOrientation.current.y) < 0.01 &&
+      Math.abs(target.z - currentOrientation.current.z) < 0.01
+    ) {
+      targetOrientations.current.shift()
+    }
+  }
+
+  return <div ref={containerRef} style={{ width, height, display: 'block' }} />
 }
 
 export default RocketBox

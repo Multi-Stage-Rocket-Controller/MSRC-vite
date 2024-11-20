@@ -9,9 +9,11 @@ const SimulationScreen = () => {
   const [data, setData] = useState([]);  // Initialize with an empty array
   const [count, setCount] = useState(0);
 
+  const handleStart = () => window.electron.ipcRenderer.send('ws-send', 'start'); // Send 'start' message to WebSocket
+  const handleStop = () => window.electron.ipcRenderer.send('ws-send', 'stop'); // Send 'stop' message to WebSocket
+  const handleMainWindow = () => navigate('/');
+
   const threeDivRef1 = useRef(null);
-  const threeDivRef2 = useRef(null);
-  const threeDivRef3 = useRef(null);
 
   useEffect(() => {
     window.electron.ipcRenderer.on('ws-message', (event, data) => {
@@ -31,24 +33,10 @@ const SimulationScreen = () => {
     };
   }, []);
 
-  const handleStart = () => {
-    window.electron.ipcRenderer.send('ws-send', 'start');
-  };
-
-  const handleStop = () => {
-    window.electron.ipcRenderer.send('ws-send', 'stop');
-  };
-
-  const handleMainWindow = () => navigate('/');
 
   const simDivStyle = {
     display: 'grid',
     alignItems: 'center'
-  };
-
-  const rocketBoxStyle = {
-    width: 300,
-    height: 300
   };
 
   return (
@@ -57,26 +45,8 @@ const SimulationScreen = () => {
       <button onClick={handleStart}>Start</button>
       <button onClick={handleStop}>Stop</button>
       <div className="threeDiv">
-        <div ref={threeDivRef1} style={rocketBoxStyle}>
+        <div ref={threeDivRef1} >
           <RocketBox containerRef={threeDivRef1} data={data} current={count} />
-        </div>
-        <div ref={threeDivRef2} style={rocketBoxStyle}>
-          <RocketBox
-            containerRef={threeDivRef2}
-            y_cam={150}
-            z_cam={0}
-            data={data}
-            current={count}
-          />
-        </div>
-        <div ref={threeDivRef3} style={rocketBoxStyle}>
-          <RocketBox
-            containerRef={threeDivRef3}
-            x_cam={150}
-            z_cam={0}
-            data={data}
-            current={count}
-          />
         </div>
       </div>
       <Chart rocketData={data} current={count} />
