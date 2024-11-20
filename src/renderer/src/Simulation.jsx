@@ -7,13 +7,15 @@ import './assets/simulation.css';
 const SimulationScreen = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);  // Initialize with an empty array
-  const [count, setCount] = useState(0);
+
+  const threeDivRef1 = useRef(null);
 
   const handleStart = () => window.electron.ipcRenderer.send('ws-send', 'start');
   const handleStop = () => window.electron.ipcRenderer.send('ws-send', 'stop');
-  const handleMainWindow = () => navigate('/');
-
-  const threeDivRef1 = useRef(null);
+  const handleMainWindow = () => {
+    window.electron.ipcRenderer.send('ws-send', 'reset');
+    navigate('/');
+  };
 
   useEffect(() => {
     window.electron.ipcRenderer.on('ws-message', (event, data) => {
@@ -32,7 +34,6 @@ const SimulationScreen = () => {
       window.electron.ipcRenderer.removeAllListeners('ws-message');
     };
   }, []);
-
 
   const simDivStyle = {
     display: 'grid',
