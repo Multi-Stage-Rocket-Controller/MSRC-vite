@@ -14,8 +14,6 @@ const Chart = ({ rocketData = [], current = 0 }) => {
   var altitudeTotal = rocketData.map((data) => data.Altitude)
   var voltageTotal = rocketData.map((data) => data.Voltage)
 
-  // const [count, setCount] = useState(0)
-
   const [activeTab, setActiveTab] = useState(0)
 
   const handleTabClick = (index) => {
