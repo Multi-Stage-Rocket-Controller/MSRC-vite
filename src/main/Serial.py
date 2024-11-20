@@ -17,7 +17,7 @@ async def handle_client(websocket):
     global sending_data
     clients.add(websocket)
     print(f"Client connected: {websocket.remote_address}")
-    current_index = 0  # Reset the current index when a new client connects
+    global sending_data  # Reset the current index when a new client connects
     try:
         async for message in websocket:
             print(f"Received message: {message}")
@@ -48,6 +48,7 @@ async def handle_replay(websocket, file_path):
                 await websocket.send(data)
                 current_index += 1
                 await asyncio.sleep(0.1)  # Wait for 0.5 seconds before sending the next row
+            current_index = 0  # Reset the current index after sending all the data
     except Exception as e:
         error_message = json.dumps({"error": str(e)})
         print(f"Error sending data to client: {error_message}")
@@ -55,10 +56,11 @@ async def handle_replay(websocket, file_path):
 
 # Handle live data streaming
 async def handle_live(websocket):
-    global serial_port
+    global sending_data, serial_port
     try:
-        serial_port = await find_serial_port()
-        if serial_port is None:
+        port_name = await find_serial_port()
+        print(port_name)
+        if port_name is None:
             error_message = json.dumps({"error": "No active serial port found"})
             print(f"Error: {error_message}")
             await websocket.send(error_message)
@@ -71,9 +73,14 @@ async def handle_live(websocket):
 
         await wait_for_start_stop(websocket)  # Wait for the "start" message first
 
+        # Open the serial port
+        serial_port = serial.Serial(port_name, 115200, timeout=1)
+
         while True:
             if sending_data:
+                print('Sending data')
                 line = serial_port.readline().decode('utf-8').strip()
+                print(line)
                 values = line.split(',')
                 if len(values) >= 9 and values[8] == '0':
                     timestamp = datetime.datetime.now().isoformat()
@@ -91,15 +98,18 @@ async def handle_live(websocket):
                     }
                     json_data = json.dumps(data)
                     print(f"Sending data to client: {json_data}")
-                    await websocket.send(json_data)
+                    await websocket.send(json_data, )
                     csv_file_path = os.path.join(replays_dir, f"RocketTelemetry-{datetime.datetime.now().date()}.csv")
                     with open(csv_file_path, "a") as f:
                         f.write(f"{timestamp},{','.join(values)}\n")
+
+                    await asyncio.sleep(0.1)  # Wait for 0.05 seconds before sending the next row
             else:
                 await wait_for_start_stop(websocket)  # Wait for the next "start" or "stop" message
     except Exception as e:
         error_message = json.dumps({"error": str(e)})
         print(f"Error sending data to client: {error_message}")
+        await websocket.send(error_message)
         await websocket.send(error_message)
 
 # Wait for the "start" or "stop" commands
@@ -120,14 +130,19 @@ async def wait_for_start_stop(websocket):
 # Find the active serial port
 async def find_serial_port():
     ports = list_ports.comports()
+    print(f"Available ports: {ports}")
     for port in ports:
+        print(f"Trying port: {port.device}")
         try:
-            ser = serial.Serial(port.device, 115200, timeout=120)
-            ser.write(b'\n')  # Send a newline to prompt any response
-            line = ser.readline().decode('utf-8').strip()
+            ser = serial.Serial(port.device, 115200, timeout=1)
+            line = ser.readline(10).decode('utf-8').strip()  # Read from the port without sending any data
+            print(f"Response from port {port.device}: {line}")
             if line:  # If we get a response, this is our port
-                return ser
-        except (OSError, serial.SerialException):
+                print(ser)
+                ser.close()  # Close the port after detecting it
+                return port.device
+        except (OSError, serial.SerialException) as e:
+            print(f"Error with port {port.device}: {e}")
             continue
     return None
 

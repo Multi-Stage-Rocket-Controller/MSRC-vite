@@ -20,13 +20,22 @@ const SimulationScreen = () => {
     navigate('/');
   };
 
+  var startTime = new Date
+
+  var firstEntryHit = false
+
   useEffect(() => {
     window.electron.ipcRenderer.on('ws-message', (event, data) => {
       // console.log('Raw data received from WebSocket:', data);
       try {
         data = new TextDecoder().decode(data);
         const receivedData = JSON.parse(data);
-        // console.log('Parsed data:', receivedData);
+        console.log('Parsed data:', receivedData);
+        if(!firstEntryHit) {
+          startTime = new Date(receivedData.timestamp).getTime();
+          firstEntryHit = true;
+        }
+        receivedData.timestamp = Math.round((new Date(receivedData.timestamp).getTime() - startTime)/100)/10;
         setData((prevData) => [...prevData, receivedData]);
         setRoll(receivedData.Roll_Radians);
         setPitch(receivedData.Pitch_Radians);
