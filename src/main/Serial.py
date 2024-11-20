@@ -98,10 +98,12 @@ async def handle_live(websocket):
                     }
                     json_data = json.dumps(data)
                     print(f"Sending data to client: {json_data}")
-                    await websocket.send(json_data)
+                    await websocket.send(json_data, )
                     csv_file_path = os.path.join(replays_dir, f"RocketTelemetry-{datetime.datetime.now().date()}.csv")
                     with open(csv_file_path, "a") as f:
                         f.write(f"{timestamp},{','.join(values)}\n")
+
+                    await asyncio.sleep(0.1)  # Wait for 0.05 seconds before sending the next row
             else:
                 await wait_for_start_stop(websocket)  # Wait for the next "start" or "stop" message
     except Exception as e:
