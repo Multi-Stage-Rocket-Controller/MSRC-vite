@@ -6,6 +6,9 @@ import RedRocket from '../assets/red_rocket.glb'
 const RocketBox = ({
   width = 900,
   height = 300,
+  roll,
+  pitch,
+  yaw,
   initialOrientation = { x: 0, y: 0, z: 0 },
   orientationQueue = [], // Array of target orientations
 }) => {
@@ -19,6 +22,7 @@ const RocketBox = ({
   const targetOrientations = useRef([...orientationQueue])
 
   useEffect(() => {
+    console.log("ROCKETBOX Current Roll: ", roll, "Current Pitch: ", pitch, "Current Yaw: ", yaw);
     // Initialize Scene
     const scene = new THREE.Scene()
     sceneRef.current = scene

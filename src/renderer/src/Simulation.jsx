@@ -6,7 +6,10 @@ import './assets/simulation.css';
 
 const SimulationScreen = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState([]);  // Initialize with an empty array
+  const [data, setData] = useState([]);
+  const [roll, setRoll] = useState(0);
+  const [pitch, setPitch] = useState(0);
+  const [yaw, setYaw] = useState(0);
 
   const threeDivRef1 = useRef(null);
 
@@ -19,12 +22,15 @@ const SimulationScreen = () => {
 
   useEffect(() => {
     window.electron.ipcRenderer.on('ws-message', (event, data) => {
-      console.log('Raw data received from WebSocket:', data);
+      // console.log('Raw data received from WebSocket:', data);
       try {
         data = new TextDecoder().decode(data);
         const receivedData = JSON.parse(data);
-        console.log('Parsed data:', receivedData);
+        // console.log('Parsed data:', receivedData);
         setData((prevData) => [...prevData, receivedData]);
+        setRoll(receivedData.Roll_Radians);
+        setPitch(receivedData.Pitch_Radians);
+        setYaw(receivedData.Yaw_Radians);
       } catch (error) {
         console.error('Error parsing JSON:', error);
       }
@@ -47,10 +53,10 @@ const SimulationScreen = () => {
       <button onClick={handleStop}>Stop</button>
       <div className="threeDiv">
         <div ref={threeDivRef1} >
-          <RocketBox containerRef={threeDivRef1} data={data} current={count} />
+          <RocketBox containerRef={threeDivRef1} roll={roll} pitch={pitch} yaw={yaw} />
         </div>
       </div>
-      <Chart rocketData={data} current={count} />
+      <Chart rocketData={data} />
     </div>
   );
 };
