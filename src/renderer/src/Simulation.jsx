@@ -13,6 +13,10 @@ const SimulationScreen = () => {
   const threeDivRef2 = useRef(null);
   const threeDivRef3 = useRef(null);
 
+  var startTime = new Date
+
+  var firstEntryHit = false
+
   useEffect(() => {
     window.electron.ipcRenderer.on('ws-message', (event, data) => {
       console.log('Raw data received from WebSocket:', data);
@@ -20,6 +24,11 @@ const SimulationScreen = () => {
         data = new TextDecoder().decode(data);
         const receivedData = JSON.parse(data);
         console.log('Parsed data:', receivedData);
+        if(!firstEntryHit) {
+          startTime = new Date(receivedData.timestamp).getTime();
+          firstEntryHit = true;
+        }
+        receivedData.timestamp = Math.round((new Date(receivedData.timestamp).getTime() - startTime)/100)/10;
         setData((prevData) => [...prevData, receivedData]);
       } catch (error) {
         console.error('Error parsing JSON:', error);
