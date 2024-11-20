@@ -106,6 +106,7 @@ async def handle_live(websocket):
                     await asyncio.sleep(0.1)  # Wait for 0.05 seconds before sending the next row
             else:
                 await wait_for_start_stop(websocket)  # Wait for the next "start" or "stop" message
+    
     except Exception as e:
         error_message = json.dumps({"error": str(e)})
         print(f"Error sending data to client: {error_message}")
