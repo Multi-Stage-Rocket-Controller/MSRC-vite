@@ -9,8 +9,8 @@ const SimulationScreen = () => {
   const [data, setData] = useState([]);  // Initialize with an empty array
   const [count, setCount] = useState(0);
 
-  const handleStart = () => window.electron.ipcRenderer.send('ws-send', 'start'); // Send 'start' message to WebSocket
-  const handleStop = () => window.electron.ipcRenderer.send('ws-send', 'stop'); // Send 'stop' message to WebSocket
+  const handleStart = () => window.electron.ipcRenderer.send('ws-send', 'start');
+  const handleStop = () => window.electron.ipcRenderer.send('ws-send', 'stop');
   const handleMainWindow = () => navigate('/');
 
   const threeDivRef1 = useRef(null);
