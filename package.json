@@ -23,6 +23,7 @@
     "@tsparticles/react": "^3.0.0",
     "chart.js": "^4.4.5",
     "electron-updater": "^6.1.7",
+    "MSRC": "file:",
     "react-chartjs-2": "^5.2.0",
     "react-router-dom": "^6.27.0",
     "three": "^0.169.0"
