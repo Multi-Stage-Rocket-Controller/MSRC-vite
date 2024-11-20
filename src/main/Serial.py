@@ -34,25 +34,38 @@ async def handle_client(websocket):
 
 # Handle replay data
 async def handle_replay(websocket, file_path):
-    global current_index
+    global current_index, sending_data
     try:
-        await wait_for_start_stop(websocket)  # Wait for the "start" message first
-        if sending_data:  # Check if we should start sending data
-            df = pd.read_csv(file_path)
-            while current_index < len(df):
-                if not sending_data:
-                    break
+        df = pd.read_csv(file_path)
+        while current_index < len(df):
+            # Check for "stop" or "reset" messages asynchronously
+            try:
+                message = await asyncio.wait_for(websocket.recv(), timeout=0.1)
+                if message == "stop":
+                    sending_data = False
+                    await wait_for_start_stop(websocket)  # Pause until "start" or "reset" is received
+                elif message == "reset":
+                    sending_data = False
+                    current_index = 0
+                    file_path = ""
+                    await wait_for_start_stop(websocket)  # Wait for a "start" command to resume
+            except asyncio.TimeoutError:
+                pass  # No message received; continue processing
+
+            if sending_data:
                 row = df.iloc[current_index]
                 data = row.to_json()
-                print(f"Sending data to client: {data}")
+                print(f"Current index is: {current_index}" )
                 await websocket.send(data)
                 current_index += 1
-                await asyncio.sleep(0.1)  # Wait for 0.5 seconds before sending the next row
-            current_index = 0  # Reset the current index after sending all the data
+                await asyncio.sleep(0.1)  # Wait before sending the next row
+            else:
+                await wait_for_start_stop(websocket)  # Wait for a "start" command to resume
     except Exception as e:
         error_message = json.dumps({"error": str(e)})
         print(f"Error sending data to client: {error_message}")
         await websocket.send(error_message)
+
 
 # Handle live data streaming
 async def handle_live(websocket):

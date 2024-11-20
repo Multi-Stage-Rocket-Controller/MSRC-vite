@@ -1,55 +1,58 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import RocketBox from './components/RocketBox.jsx';
-import Chart from './components/Chart.jsx';
-import './assets/simulation.css';
+import React, { useRef, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import RocketBox from './components/RocketBox.jsx'
+import Chart from './components/Chart.jsx'
+import './assets/simulation.css'
 
 const SimulationScreen = () => {
-  const navigate = useNavigate();
-  const [data, setData] = useState([]);  // Initialize with an empty array
-  const [count, setCount] = useState(0);
+  const navigate = useNavigate()
+  const [data, setData] = useState([]) // Initialize with an empty array
+  const [count, setCount] = useState(0)
 
-  const threeDivRef1 = useRef(null);
-  const threeDivRef2 = useRef(null);
-  const threeDivRef3 = useRef(null);
+  const threeDivRef1 = useRef(null)
+  const threeDivRef2 = useRef(null)
+  const threeDivRef3 = useRef(null)
 
   useEffect(() => {
     window.electron.ipcRenderer.on('ws-message', (event, data) => {
-      console.log('Raw data received from WebSocket:', data);
+      console.log('Raw data received from WebSocket:', data)
       try {
-        data = new TextDecoder().decode(data);
-        const receivedData = JSON.parse(data);
-        console.log('Parsed data:', receivedData);
-        setData((prevData) => [...prevData, receivedData]);
+        data = new TextDecoder().decode(data)
+        const receivedData = JSON.parse(data)
+        console.log('Parsed data:', receivedData)
+        setData((prevData) => [...prevData, receivedData])
       } catch (error) {
-        console.error('Error parsing JSON:', error);
+        console.error('Error parsing JSON:', error)
       }
-    });
+    })
 
     return () => {
-      window.electron.ipcRenderer.removeAllListeners('ws-message');
-    };
-  }, []);
+      window.electron.ipcRenderer.removeAllListeners('ws-message')
+    }
+  }, [])
 
   const handleStart = () => {
-    window.electron.ipcRenderer.send('ws-send', 'start');
-  };
+    window.electron.ipcRenderer.send('ws-send', 'start')
+  }
 
   const handleStop = () => {
-    window.electron.ipcRenderer.send('ws-send', 'stop');
-  };
+    window.electron.ipcRenderer.send('ws-send', 'stop')
+  }
 
-  const handleMainWindow = () => navigate('/');
+  const handleMainWindow = () => {
+    window.electron.ipcRenderer.send('ws-send', 'reset')
+    navigate('/')
+  }
 
   const simDivStyle = {
     display: 'grid',
     alignItems: 'center'
-  };
+  }
 
   const rocketBoxStyle = {
     width: 300,
     height: 300
-  };
+  }
 
   return (
     <div style={simDivStyle}>
@@ -81,7 +84,7 @@ const SimulationScreen = () => {
       </div>
       <Chart rocketData={data} current={count} />
     </div>
-  );
-};
+  )
+}
 
-export default SimulationScreen;
+export default SimulationScreen
