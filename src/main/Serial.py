@@ -72,7 +72,6 @@ async def handle_live(websocket):
     global sending_data, serial_port
     try:
         port_name = await find_serial_port()
-        print(port_name)
         if port_name is None:
             error_message = json.dumps({"error": "No active serial port found"})
             print(f"Error: {error_message}")
@@ -87,44 +86,57 @@ async def handle_live(websocket):
         await wait_for_start_stop(websocket)  # Wait for the "start" message first
 
         # Open the serial port
-        serial_port = serial.Serial(port_name, 115200, timeout=1)
+        serial_port = serial.Serial(port_name, 115200, timeout=0.1)  # Add timeout to avoid blocking
 
         while True:
-            if sending_data:
-                print('Sending data')
-                line = serial_port.readline().decode('utf-8').strip()
-                print(line)
-                values = line.split(',')
-                if len(values) >= 9 and values[8] == '0':
-                    timestamp = datetime.datetime.now().isoformat()
-                    data = {
-                        "timestamp": timestamp,
-                        "Roll_Radians": values[0],
-                        "Pitch_Radians": values[1],
-                        "Yaw_Radians": values[2],
-                        "Latitude": values[3],
-                        "Longitude": values[4],
-                        "Acc_net": values[5],
-                        "Altitude": values[6],
-                        "Voltage": values[7],
-                        "System_State": values[8]
-                    }
-                    json_data = json.dumps(data)
-                    print(f"Sending data to client: {json_data}")
-                    await websocket.send(json_data, )
-                    csv_file_path = os.path.join(replays_dir, f"RocketTelemetry-{datetime.datetime.now().date()}.csv")
-                    with open(csv_file_path, "a") as f:
-                        f.write(f"{timestamp},{','.join(values)}\n")
+            # Check for WebSocket messages
+            try:
+                message = await asyncio.wait_for(websocket.recv(), timeout=0.1)
+                if message == "stop":
+                    sending_data = False
+                elif message == "reset":
+                    sending_data = False
+                    # Reset any other state here if needed
+            except asyncio.TimeoutError:
+                pass  # No message received; continue processing
 
-                    await asyncio.sleep(0.1)  # Wait for 0.05 seconds before sending the next row
+            if sending_data:
+                # Attempt to read a line from the serial port
+                line = serial_port.readline().decode('utf-8').strip()
+                if line:
+                    print(f"Read line from serial: {line}")
+                    values = line.split(',')
+                    if len(values) >= 9 and values[8] == '0':
+                        timestamp = datetime.datetime.now().isoformat()
+                        data = {
+                            "timestamp": timestamp,
+                            "Roll_Radians": values[0],
+                            "Pitch_Radians": values[1],
+                            "Yaw_Radians": values[2],
+                            "Latitude": values[3],
+                            "Longitude": values[4],
+                            "Acc_net": values[5],
+                            "Altitude": values[6],
+                            "Voltage": values[7],
+                            "System_State": values[8]
+                        }
+                        json_data = json.dumps(data)
+                        print(f"Sending data to client: {json_data}")
+                        await websocket.send(json_data)
+                        csv_file_path = os.path.join(replays_dir, f"RocketTelemetry-{datetime.datetime.now().date()}.csv")
+                        with open(csv_file_path, "a") as f:
+                            f.write(f"{timestamp},{','.join(values)}\n")
+
+                await asyncio.sleep(0.1)  # Allow other tasks to run
             else:
-                await wait_for_start_stop(websocket)  # Wait for the next "start" or "stop" message
-    
+                # If not sending data, wait for a "start" command
+                await wait_for_start_stop(websocket)
+
     except Exception as e:
         error_message = json.dumps({"error": str(e)})
         print(f"Error sending data to client: {error_message}")
         await websocket.send(error_message)
-        await websocket.send(error_message)
+
 
 # Wait for the "start" or "stop" commands
 async def wait_for_start_stop(websocket):
