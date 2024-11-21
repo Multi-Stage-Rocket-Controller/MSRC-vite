@@ -1,28 +1,18 @@
+// RocketBox.jsx
 import React, { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import RedRocket from '../assets/red_rocket.glb'
 
-const RocketBox = ({
-  width = 900,
-  height = 300,
-  roll,
-  pitch,
-  yaw,
-  initialOrientation = { x: 0, y: 0, z: 0 },
-  orientationQueue = [], // Array of target orientations
-}) => {
+const RocketBox = ({ width = 900, height = 300, roll = 0, pitch = 0, yaw = 0 }) => {
   const containerRef = useRef(null)
   const sceneRef = useRef(null)
   const rendererRef = useRef(null)
   const camerasRef = useRef({})
   const rocketRef = useRef(null)
   const animationRef = useRef(null)
-  const currentOrientation = useRef(initialOrientation)
-  const targetOrientations = useRef([...orientationQueue])
 
   useEffect(() => {
-    console.log("ROCKETBOX Current Roll: ", roll, "Current Pitch: ", pitch, "Current Yaw: ", yaw);
     // Initialize Scene
     const scene = new THREE.Scene()
     sceneRef.current = scene
@@ -73,7 +63,6 @@ const RocketBox = ({
         const model = gltf.scene
         rocketRef.current = model
         model.scale.set(5, 5, 5)
-        model.rotation.set(initialOrientation.x, initialOrientation.y, initialOrientation.z)
 
         // Center the model
         const bbox = new THREE.Box3().setFromObject(model)
@@ -105,8 +94,6 @@ const RocketBox = ({
         renderer.setScissorTest(true)
         renderer.render(scene, camerasRef.current[cameraKeys[index]])
       })
-
-      updateAnimation()
     }
     animate()
 
@@ -134,38 +121,14 @@ const RocketBox = ({
         containerRef.current.removeChild(renderer.domElement)
       }
     }
-  }, [width, height, initialOrientation])
+  }, [width, height])
 
   useEffect(() => {
-    targetOrientations.current.push(...orientationQueue)
-  }, [orientationQueue])
-
-  const updateAnimation = () => {
-    if (!rocketRef.current || targetOrientations.current.length === 0) return
-
-    const target = targetOrientations.current[0]
-    const speed = 0.02
-
-    // Interpolate rotation
-    currentOrientation.current.x += (target.x - currentOrientation.current.x) * speed
-    currentOrientation.current.y += (target.y - currentOrientation.current.y) * speed
-    currentOrientation.current.z += (target.z - currentOrientation.current.z) * speed
-
-    rocketRef.current.rotation.set(
-      currentOrientation.current.x,
-      currentOrientation.current.y,
-      currentOrientation.current.z
-    )
-
-    // Check if rotation is close to target
-    if (
-      Math.abs(target.x - currentOrientation.current.x) < 0.01 &&
-      Math.abs(target.y - currentOrientation.current.y) < 0.01 &&
-      Math.abs(target.z - currentOrientation.current.z) < 0.01
-    ) {
-      targetOrientations.current.shift()
+    console.log('Updating Rocket Rotation:', { roll, pitch, yaw })
+    if (rocketRef.current) {
+      rocketRef.current.rotation.set(roll, pitch, yaw)
     }
-  }
+  }, [roll, pitch, yaw])
 
   return <div ref={containerRef} style={{ width, height, display: 'block' }} />
 }

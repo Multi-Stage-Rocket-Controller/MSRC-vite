@@ -30,7 +30,7 @@ const SimulationScreen = () => {
       try {
         data = new TextDecoder().decode(data);
         const receivedData = JSON.parse(data);
-        console.log('Parsed data:', receivedData);
+        // console.log('Parsed data:', receivedData);
         if(!firstEntryHit) {
           startTime = new Date(receivedData.timestamp).getTime();
           firstEntryHit = true;
@@ -62,7 +62,7 @@ const SimulationScreen = () => {
       <button onClick={handleStop}>Stop</button>
       <div className="threeDiv">
         <div ref={threeDivRef1} >
-          <RocketBox containerRef={threeDivRef1} roll={roll} pitch={pitch} yaw={yaw} />
+          <RocketBox roll={roll} pitch={pitch} yaw={yaw} />
         </div>
       </div>
       <Chart rocketData={data} />
