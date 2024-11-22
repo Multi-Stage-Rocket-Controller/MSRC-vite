@@ -34,9 +34,9 @@ h1 {
 .btn1 {
   flex: 1;
   border: 2px solid rgb(55, 82, 55);
-  background-color: rgba(74, 164, 51, 0.34);
   border-radius: 8px;
   color: white;
+  background-color: rgb(25, 35, 25);
   height: 50px;
   width: 100px;
   margin: 2px;
@@ -45,6 +45,10 @@ h1 {
   font-weight: 500;
   font-style: normal;
   text-shadow: 0px 2px 2px #E6DC81;
+}
+.btn1:hover {
+  border: 3px solid rgb(55, 82, 55);
+  background-color: rgba(74, 164, 51, 0.34);
 }
 .topBox {
   display:flex;

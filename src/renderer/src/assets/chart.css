@@ -4,7 +4,7 @@
   height: 300px;
   box-sizing: border-box;
   border: 4px solid rgb(55, 82, 55);
-  background-color: rgba(74, 164, 51, 0.34);
+  background-color: rgb(25, 35, 25);
   width: 900px;
   border-radius: 10px;
   justify-content: center;
@@ -36,4 +36,8 @@
 }
 .sectionText {
   margin-top: 15px
+}
+.section:hover {
+  border: 3px solid rgb(55, 82, 55);
+  background-color: rgba(74, 164, 51, 0.15);
 }

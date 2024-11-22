@@ -95,7 +95,7 @@ code {
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
-  border: 3px solid var(--figma-green);
+  border: 3px solid var(--figma-red);
   text-align: center;
   font-weight: 600;
   white-space: nowrap;
@@ -104,11 +104,14 @@ code {
   line-height: 38px;
   font-size: 14px;
   background-color: transparent;
+  text-shadow: 0px 2px 2px #E6DC81;
+  box-shadow: 0 2 2px #E6DC81
 }
 
 .action a:hover {
-  border: 3px solid var(--figma-green);
-  background-color: var(--figma-green);
+  border: 3px solid var(--figma-red);
+  background-color: var(--figma-red);
+  box-shadow: 0 2 2px var(--figma-red)
 }
 
 .versions {
