@@ -24,11 +24,11 @@ const SimulationScreen = () => {
         data = new TextDecoder().decode(data);
         const receivedData = JSON.parse(data);
         console.log('Parsed data:', receivedData);
-        if(!firstEntryHit) {
+        if (!firstEntryHit) {
           startTime = new Date(receivedData.timestamp).getTime();
           firstEntryHit = true;
         }
-        receivedData.timestamp = Math.round((new Date(receivedData.timestamp).getTime() - startTime)/100)/10;
+        receivedData.timestamp = Math.round((new Date(receivedData.timestamp).getTime() - startTime) / 100) / 10;
         setData((prevData) => [...prevData, receivedData]);
       } catch (error) {
         console.error('Error parsing JSON:', error);
@@ -60,11 +60,21 @@ const SimulationScreen = () => {
     height: 300
   };
 
+  const flex2 = {
+    flex: 2
+  }
+  const flex3 = {
+    flex: 3
+  }
+
   return (
     <div style={simDivStyle}>
-      <button onClick={handleMainWindow}>Back</button>
-      <button onClick={handleStart}>Start</button>
-      <button onClick={handleStop}>Stop</button>
+      <div className="topBox">
+        <div style={flex3} ><button className="btn1" onClick={handleMainWindow}>Back</button></div>
+        <div style={flex2}><button className="btn1" onClick={handleStart}>Start</button>
+          <button className="btn1" onClick={handleStop}>Stop</button></div>
+          <div style={flex3}></div>
+      </div>
       <div className="threeDiv">
         <div ref={threeDivRef1} style={rocketBoxStyle}>
           <RocketBox containerRef={threeDivRef1} data={data} current={count} />
