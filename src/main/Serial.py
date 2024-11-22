@@ -5,129 +5,281 @@ import json
 import serial
 import datetime
 import os
+import re
 from serial.tools import list_ports
 
+# Set of connected clients
 clients = set()
-serial_port = None
-sending_data = False
-current_index = 0  # Global variable to keep track of the current index
+
+# Class to maintain the state for each client
+class ClientState:
+    def __init__(self):
+        self.mode = None  # 'replay' or 'live'
+        self.file_path = None
+        self.df = None  # DataFrame for replay mode
+        self.current_index = 0
+        self.sending_data = False
+        self.serial_port = None
+        self.start_event = asyncio.Event()  # Event to signal start
+        self.stop_event = asyncio.Event()   # Event to signal stop
+        self.reset_event = asyncio.Event()  # Event to signal reset
+        self.mode_event = asyncio.Event()   # Event to signal mode change
+        self.csv_file_path = None           # CSV file path for live data
 
 # Handle incoming WebSocket connections
 async def handle_client(websocket):
-    global sending_data
     clients.add(websocket)
     print(f"Client connected: {websocket.remote_address}")
-    global sending_data  # Reset the current index when a new client connects
+
+    client_state = ClientState()
+    data_task = None  # Initialize data_task
+
+    try:
+        # Create task for handling messages
+        message_task = asyncio.create_task(message_handler(websocket, client_state))
+
+        while True:
+            # Wait for mode to be set
+            await client_state.mode_event.wait()
+            client_state.mode_event.clear()
+
+            # Cancel any existing data_task
+            if data_task and not data_task.done():
+                data_task.cancel()
+                try:
+                    await data_task
+                except asyncio.CancelledError:
+                    pass
+
+            # Start new data_task based on the mode
+            if client_state.mode == 'replay':
+                data_task = asyncio.create_task(send_replay_data(websocket, client_state))
+            elif client_state.mode == 'live':
+                data_task = asyncio.create_task(send_live_data(websocket, client_state))
+            else:
+                data_task = None  # Unknown mode
+
+    except websockets.exceptions.ConnectionClosedError as e:
+        print(f"Connection closed with error: {e}")
+    except Exception as e:
+        print(f"Exception in handle_client: {e}")
+    finally:
+        if data_task and not data_task.done():
+            data_task.cancel()
+            try:
+                await data_task
+            except asyncio.CancelledError:
+                pass
+        if client_state.serial_port and client_state.serial_port.is_open:
+            client_state.serial_port.close()
+        clients.remove(websocket)
+        print(f"Client disconnected: {websocket.remote_address}")
+
+# Task to handle incoming messages from the client
+async def message_handler(websocket, client_state):
     try:
         async for message in websocket:
             print(f"Received message: {message}")
             if message.startswith("replay"):
                 _, file_path = message.split(", ")
-                await handle_replay(websocket, file_path)
+                client_state.mode = 'replay'
+                client_state.file_path = file_path
+                client_state.df = pd.read_csv(file_path)
+                client_state.current_index = 0
+                client_state.sending_data = False
+                # Clear events
+                client_state.start_event.clear()
+                client_state.stop_event.clear()
+                client_state.reset_event.clear()
+                client_state.mode_event.set()
+                print(f"Replay mode initialized with file: {file_path}")
             elif message == "live":
-                await handle_live(websocket)
+                client_state.mode = 'live'
+                client_state.sending_data = False
+                # Clear events
+                client_state.start_event.clear()
+                client_state.stop_event.clear()
+                client_state.reset_event.clear()
+                client_state.mode_event.set()
+                print("Live mode initialized")
+            elif message == "start":
+                client_state.sending_data = True
+                client_state.start_event.set()
+                print("Data sending started")
+            elif message == "stop":
+                client_state.sending_data = False
+                client_state.stop_event.set()
+                print("Data sending stopped")
+                if client_state.mode == 'live':
+                    # Close serial port if open
+                    if client_state.serial_port and client_state.serial_port.is_open:
+                        client_state.serial_port.close()
+                        print("Serial port closed on stop")
+            elif message == "reset":
+                client_state.sending_data = False
+                client_state.reset_event.set()
+                print("Data sending reset")
     except websockets.exceptions.ConnectionClosedError as e:
         print(f"Connection closed with error: {e}")
-    finally:
-        clients.remove(websocket)
-        print(f"Client disconnected: {websocket.remote_address}")
-
-# Handle replay data
-async def handle_replay(websocket, file_path):
-    global current_index
-    try:
-        await wait_for_start_stop(websocket)  # Wait for the "start" message first
-        if sending_data:  # Check if we should start sending data
-            df = pd.read_csv(file_path)
-            while current_index < len(df):
-                if not sending_data:
-                    break
-                row = df.iloc[current_index]
-                data = row.to_json()
-                print(f"Sending data to client: {data}")
-                await websocket.send(data)
-                current_index += 1
-                await asyncio.sleep(0.1)  # Wait for 0.5 seconds before sending the next row
-            current_index = 0  # Reset the current index after sending all the data
     except Exception as e:
+        print(f"Exception in message_handler: {e}")
+
+# Function to send replay data from CSV file
+async def send_replay_data(websocket, client_state):
+    try:
+        print("Starting replay data sender")
+        while client_state.current_index < len(client_state.df):
+            if client_state.sending_data:
+                row = client_state.df.iloc[client_state.current_index]
+                data = row.to_json()
+                print(f"Sending data at index {client_state.current_index}: {data}")
+                await websocket.send(data)
+                client_state.current_index += 1
+                await asyncio.sleep(0.1)  # Adjust as needed
+            else:
+                # Wait for start or reset
+                start_wait_task = asyncio.create_task(client_state.start_event.wait())
+                reset_wait_task = asyncio.create_task(client_state.reset_event.wait())
+                try:
+                    done, pending = await asyncio.wait(
+                        [start_wait_task, reset_wait_task],
+                        return_when=asyncio.FIRST_COMPLETED
+                    )
+
+                    if start_wait_task in done:
+                        client_state.start_event.clear()
+                        client_state.sending_data = True
+                        reset_wait_task.cancel()
+                        await asyncio.gather(reset_wait_task, return_exceptions=True)
+                    elif reset_wait_task in done:
+                        client_state.reset_event.clear()
+                        client_state.current_index = 0
+                        client_state.sending_data = False
+                        start_wait_task.cancel()
+                        await asyncio.gather(start_wait_task, return_exceptions=True)
+                        print("Replay data sender reset")
+                        break  # Exit the loop to allow for mode change or re-initialization
+                except asyncio.CancelledError:
+                    start_wait_task.cancel()
+                    reset_wait_task.cancel()
+                    await asyncio.gather(start_wait_task, reset_wait_task, return_exceptions=True)
+                    raise
+        print("Exiting replay data sender")
+    except asyncio.CancelledError:
+        print("Replay data sender cancelled")
+        raise
+    except Exception as e:
+        print(f"Exception in send_replay_data: {e}")
         error_message = json.dumps({"error": str(e)})
-        print(f"Error sending data to client: {error_message}")
         await websocket.send(error_message)
 
-# Handle live data streaming
-async def handle_live(websocket):
-    global sending_data, serial_port
+# Function to send live data from serial port
+async def send_live_data(websocket, client_state):
     try:
         port_name = await find_serial_port()
-        print(port_name)
         if port_name is None:
             error_message = json.dumps({"error": "No active serial port found"})
             print(f"Error: {error_message}")
             await websocket.send(error_message)
             return
 
+        print("Starting live data sender")
+
         # Determine the root directory and create the Replays folder
         root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
         replays_dir = os.path.join(root_dir, 'Replays')
         os.makedirs(replays_dir, exist_ok=True)
 
-        await wait_for_start_stop(websocket)  # Wait for the "start" message first
-
-        # Open the serial port
-        serial_port = serial.Serial(port_name, 115200, timeout=1)
-
         while True:
-            if sending_data:
-                print('Sending data')
-                line = serial_port.readline().decode('utf-8').strip()
-                print(line)
-                values = line.split(',')
-                if len(values) >= 9 and values[8] == '0':
-                    timestamp = datetime.datetime.now().isoformat()
-                    data = {
-                        "timestamp": timestamp,
-                        "Roll_Radians": values[0],
-                        "Pitch_Radians": values[1],
-                        "Yaw_Radians": values[2],
-                        "Latitude": values[3],
-                        "Longitude": values[4],
-                        "Acc_net": values[5],
-                        "Altitude": values[6],
-                        "Voltage": values[7],
-                        "System_State": values[8]
-                    }
-                    json_data = json.dumps(data)
-                    print(f"Sending data to client: {json_data}")
-                    await websocket.send(json_data, )
-                    csv_file_path = os.path.join(replays_dir, f"RocketTelemetry-{datetime.datetime.now().date()}.csv")
-                    with open(csv_file_path, "a") as f:
-                        f.write(f"{timestamp},{','.join(values)}\n")
-
-                    await asyncio.sleep(0.1)  # Wait for 0.05 seconds before sending the next row
+            if client_state.sending_data:
+                # Read line from serial port
+                line = client_state.serial_port.readline().decode('utf-8').strip()
+                if line:
+                    print(f"Read line from serial: {line}")
+                    values = line.split(',')
+                    if len(values) >= 9:
+                        timestamp = datetime.datetime.now().isoformat()
+                        data = {
+                            "timestamp": timestamp,
+                            "Roll_Radians": values[0],
+                            "Pitch_Radians": values[1],
+                            "Yaw_Radians": values[2],
+                            "Latitude": values[3],
+                            "Longitude": values[4],
+                            "Acc_net": values[5],
+                            "Altitude": values[6],
+                            "Voltage": values[7],
+                            "System_State": values[8]
+                        }
+                        json_data = json.dumps(data)
+                        print(f"Sending data to client: {json_data}")
+                        await websocket.send(json_data)
+                        # Append data to CSV file
+                        with open(client_state.csv_file_path, "a") as f:
+                            f.write(f"{timestamp},{','.join(values)}\n")
+                await asyncio.sleep(0.1)  # Adjust as needed
             else:
-                await wait_for_start_stop(websocket)  # Wait for the next "start" or "stop" message
+                # Close serial port if open
+                if client_state.serial_port and client_state.serial_port.is_open:
+                    client_state.serial_port.close()
+                    print("Serial port closed because sending_data is False")
+
+                # Wait for start or reset
+                start_wait_task = asyncio.create_task(client_state.start_event.wait())
+                reset_wait_task = asyncio.create_task(client_state.reset_event.wait())
+                try:
+                    done, pending = await asyncio.wait(
+                        [start_wait_task, reset_wait_task],
+                        return_when=asyncio.FIRST_COMPLETED
+                    )
+
+                    if start_wait_task in done:
+                        client_state.start_event.clear()
+                        client_state.sending_data = True
+                        # Re-open serial port
+                        client_state.serial_port = serial.Serial(port_name, 115200, timeout=0.1)
+                        print("Serial port re-opened after start")
+                        # Calculate csv_file_path once when live data starts
+                        current_time_str = re.sub(r'\.\d+', '', datetime.datetime.now().isoformat()).replace(':', '-')
+                        csv_file_name = f"RocketTelemetry-{current_time_str}.csv"
+                        client_state.csv_file_path = os.path.join(replays_dir, csv_file_name)
+                        # Create the initial CSV file
+                        with open(client_state.csv_file_path, "w") as f:
+                            f.write("timestamp,Roll_Radians,Pitch_Radians,Yaw_Radians,Latitude,Longitude,Acc_net,Altitude,Voltage,System_State\n")
+                        reset_wait_task.cancel()
+                        await asyncio.gather(reset_wait_task, return_exceptions=True)
+                    elif reset_wait_task in done:
+                        client_state.reset_event.clear()
+                        client_state.sending_data = False
+                        start_wait_task.cancel()
+                        await asyncio.gather(start_wait_task, return_exceptions=True)
+                        # Exit the loop to allow for mode change
+                        print("Reset event set, exiting live data sender")
+                        break
+                except asyncio.CancelledError:
+                    start_wait_task.cancel()
+                    reset_wait_task.cancel()
+                    await asyncio.gather(start_wait_task, reset_wait_task, return_exceptions=True)
+                    raise
+
+        print("Exiting live data sender")
+    except asyncio.CancelledError:
+        print("Live data sender cancelled")
+        # Close serial port if open
+        if client_state.serial_port and client_state.serial_port.is_open:
+            client_state.serial_port.close()
+            print("Serial port closed due to cancellation")
+        raise
     except Exception as e:
+        print(f"Exception in send_live_data: {e}")
         error_message = json.dumps({"error": str(e)})
-        print(f"Error sending data to client: {error_message}")
         await websocket.send(error_message)
-        await websocket.send(error_message)
+        # Close serial port if open
+        if client_state.serial_port and client_state.serial_port.is_open:
+            client_state.serial_port.close()
+            print("Serial port closed due to exception")
 
-# Wait for the "start" or "stop" commands
-async def wait_for_start_stop(websocket):
-    global sending_data, current_index
-    async for message in websocket:
-        if message == "start":
-            sending_data = True
-            break
-        elif message == "stop":
-            sending_data = False
-            break
-        elif message == "reset":
-            sending_data = False
-            current_index = 0
-            break
-
-# Find the active serial port
+# Function to find the active serial port
 async def find_serial_port():
     ports = list_ports.comports()
     print(f"Available ports: {ports}")
@@ -135,12 +287,12 @@ async def find_serial_port():
         print(f"Trying port: {port.device}")
         try:
             ser = serial.Serial(port.device, 115200, timeout=1)
-            line = ser.readline(10).decode('utf-8').strip()  # Read from the port without sending any data
+            line = ser.readline(10).decode('utf-8').strip()
             print(f"Response from port {port.device}: {line}")
-            if line:  # If we get a response, this is our port
-                print(ser)
-                ser.close()  # Close the port after detecting it
+            if line:
+                ser.close()
                 return port.device
+            ser.close()
         except (OSError, serial.SerialException) as e:
             print(f"Error with port {port.device}: {e}")
             continue
@@ -148,20 +300,10 @@ async def find_serial_port():
 
 # Main entry point to start the WebSocket server
 async def main():
-    async with websockets.serve(handle_client, "localhost", 8080):  # Ensure port is 8080
+    async with websockets.serve(handle_client, "localhost", 8080):
         print("WebSocket server started on ws://localhost:8080")
         await asyncio.Future()  # Run forever
 
 if __name__ == "__main__":
-    # Determine the root directory and create the Replays folder
-    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-    replays_dir = os.path.join(root_dir, 'Replays')
-    os.makedirs(replays_dir, exist_ok=True)
-
-    # Create the initial CSV file in the Replays folder if it doesn't exist
-    csv_file_path = os.path.join(replays_dir, f"RocketTelemetry-{datetime.datetime.now().date()}.csv")
-    if not os.path.exists(csv_file_path):
-        with open(csv_file_path, "w") as f:
-            f.write("timestamp,Roll_Radians,Pitch_Radians,Yaw_Radians,Latitude,Longitude,Acc_net,Altitude,Voltage,System_State\n")
-
+    # Run the main function
     asyncio.run(main())
