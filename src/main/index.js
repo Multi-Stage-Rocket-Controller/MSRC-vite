@@ -11,8 +11,8 @@ let ws = null
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1050,
+    height: 800,
     icon: rocketIcon,
     show: false,
     autoHideMenuBar: true,
