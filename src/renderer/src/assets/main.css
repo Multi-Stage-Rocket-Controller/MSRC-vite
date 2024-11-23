@@ -1,5 +1,4 @@
 @import './base.css';
-/* background-image: url('./wavy-lines.svg'); keeping for reference*/
 
 body {
   font-family: 'Orbitron', sans-serif;
@@ -27,7 +26,8 @@ code {
   font-size: 85%;
 }
 
-#root {
+/* For splash */
+#root { 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -35,31 +35,9 @@ code {
   margin-bottom: 80px;
 }
 
-.logo {
-  margin-bottom: 20px;
-  -webkit-user-drag: none;
-  height: 128px;
-  width: 128px;
-  will-change: filter;
-  transition: filter 300ms;
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 1.2em #6988e6aa);
-}
-
-.creator {
-  font-size: 14px;
-  line-height: 16px;
-  color: var(--ev-c-text-2);
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
 .title {
   font-family: 'Orbitron', sans-serif;
   font-size: 44px;
-  color: var(--ev-c-text-1);
   font-weight: 700;
   line-height: 32px;
   text-align: center;
@@ -128,7 +106,6 @@ code {
 .versions li {
   display: block;
   float: left;
-  border-right: 1px solid var(--ev-c-gray-1);
   padding: 0 20px;
   font-size: 14px;
   line-height: 14px;
@@ -150,23 +127,4 @@ code {
   src: url('./fonts/Orbitron-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900; /* Variable font weight range */
   font-display: swap;
-}
-
-@media (max-width: 720px) {
-  .text {
-    font-size: 20px;
-  }
-}
-
-@media (max-width: 620px) {
-  .versions {
-    display: none;
-  }
-}
-
-@media (max-width: 350px) {
-  .tip,
-  .actions {
-    display: none;
-  }
 }
