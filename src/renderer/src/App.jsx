@@ -43,10 +43,6 @@ function App() {
     }
   };
 
-  const goToSandbox = () => { 
-    navigate("/sandbox");
-  }
-
   return (
     <div>
       <div className="title">
@@ -61,11 +57,6 @@ function App() {
         <div className="action">
           <a target="_blank" rel="noreferrer" onClick={goToLive}>
             Live
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={goToSandbox}>
-            Sandbox
           </a>
         </div>
       </div>
