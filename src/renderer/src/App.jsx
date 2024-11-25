@@ -49,12 +49,12 @@ function App() {
         Rocket Visualizer
       </div>
       <div className="actions">
-        <div className="action">
+        <div className="replay">
           <a target="_blank" rel="noreferrer" onClick={goToSimulation}>
             Replay
           </a>
         </div>
-        <div className="action">
+        <div className="live">
           <a target="_blank" rel="noreferrer" onClick={goToLive}>
             Live
           </a>

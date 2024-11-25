@@ -81,17 +81,12 @@ code {
   padding-top: 32px;
   margin: -6px;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: space-between;
   flex-direction: column;
   align-items: center;
 }
 
-.action {
-  flex-shrink: 0;
-  padding: 6px;
-}
-
-.action a {
+.replay a {
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
@@ -108,10 +103,33 @@ code {
   box-shadow: 0 2 2px #E6DC81
 }
 
-.action a:hover {
+.replay a:hover {
   border: 3px solid var(--figma-red);
-  background-color: var(--figma-red);
+  background-color: rgba(251, 100, 81, .5);;
   box-shadow: 0 2 2px var(--figma-red)
+}
+
+.live a {
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  border: 3px solid var(--figma-yellow);
+  text-align: center;
+  font-weight: 600;
+  white-space: nowrap;
+  border-radius: 20px;
+  padding: 0 20px;
+  line-height: 38px;
+  font-size: 14px;
+  background-color: transparent;
+  text-shadow: 0px 2px 2px #E6DC81;
+  box-shadow: 0 2 2px #E6DC81
+}
+
+.live a:hover {
+  border: 3px solid var(--figma-yellow);
+  background-color: rgba(230, 220, 129, .5);
+  box-shadow: 0 2 2px var(--figma-yellow)
 }
 
 .versions {

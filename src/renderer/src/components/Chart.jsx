@@ -3,11 +3,11 @@ import { Line } from 'react-chartjs-2'
 import React, { useEffect, useRef, useState } from 'react'
 import '../assets/chart.css'
 
-const Chart = ({ rocketData = [], current = 0 }) => {
-  var labelArrayTotal = rocketData.map((data) => data.timestamp)
+const Chart = ({ rocketData = [] }) => {
+  var labelArrayTotal = rocketData.map((data) => data.timestamp).length < 50 ? rocketData.map((data) => data.timestamp) : rocketData.map((data) => data.timestamp).splice(rocketData.map((data) => data.timestamp).length - 52, rocketData.map((data) => data.timestamp).length - 1)
   var rollRadiansTotal = rocketData.map((data) => data.Roll_Radians)
-  var pitchRadiansTotal = rocketData.map((data) => data.Pitch_Radians)
   var yawRadiansTotal = rocketData.map((data) => data.Yaw_Radians)
+  var pitchRadiansTotal = rocketData.map((data) => data.Pitch)
   var latitudeTotal = rocketData.map((data) => data.Latitude)
   var longitudeTotal = rocketData.map((data) => data.Longitude)
   var accelerationDataTotal = rocketData.map((data) => data.Acc_net)
@@ -20,6 +20,10 @@ const Chart = ({ rocketData = [], current = 0 }) => {
 
   const handleTabClick = (index) => {
     setActiveTab(index)
+    console.log("testValue1")
+    console.log(rocketData.map((data) => data.timestamp))
+    console.log(rocketData.map((data) => data.timestamp).splice(rocketData.map((data) => data.timestamp).length - 52), rocketData.map((data) => data.timestamp).length - 1)
+    console.log("testValueend")
   }
 
   return (
@@ -88,6 +92,10 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                       color: 'white'
                     }
                   }
+                },
+                animation: {
+                  duration: 0.045,
+                  easing: 'linear'
                 }
               }}
             />
@@ -131,6 +139,10 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                       color: 'white'
                     }
                   }
+                },
+                animation: {
+                  duration: 0.045,
+                  easing: 'linear'
                 }
               }}
             />
@@ -173,6 +185,10 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                       color: 'white'
                     }
                   }
+                },
+                animation: {
+                  duration: 0.045,
+                  easing: 'linear'
                 }
               }}
             />
@@ -215,6 +231,10 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                       color: 'white'
                     }
                   }
+                },
+                animation: {
+                  duration: 0.045,
+                  easing: 'linear'
                 }
               }}
             />
@@ -257,6 +277,10 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                       color: 'white'
                     }
                   }
+                },
+                animation: {
+                  duration: 0.045,
+                  easing: 'linear'
                 }
               }}
             />
@@ -299,6 +323,10 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                       color: 'white'
                     }
                   }
+                },
+                animation: {
+                  duration: 0.045,
+                  easing: 'linear'
                 }
               }}
             />
@@ -341,6 +369,10 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                       color: 'white'
                     }
                   }
+                },
+                animation: {
+                  duration: 0.045,
+                  easing: 'linear'
                 }
               }}
             />
@@ -383,6 +415,10 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                       color: 'white'
                     }
                   }
+                },
+                animation: {
+                  duration: 0.045,
+                  easing: 'linear'
                 }
               }}
             />
