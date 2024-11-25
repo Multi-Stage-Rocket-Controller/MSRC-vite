@@ -5,14 +5,14 @@ import '../assets/chart.css'
 
 const Chart = ({ rocketData = [] }) => {
   var labelArrayTotal = rocketData.map((data) => data.timestamp).length < 50 ? rocketData.map((data) => data.timestamp) : rocketData.map((data) => data.timestamp).splice(rocketData.map((data) => data.timestamp).length - 52, rocketData.map((data) => data.timestamp).length - 1)
-  var rollRadiansTotal = rocketData.map((data) => data.Roll_Radians)
-  var yawRadiansTotal = rocketData.map((data) => data.Yaw_Radians)
-  var pitchRadiansTotal = rocketData.map((data) => data.Pitch)
-  var latitudeTotal = rocketData.map((data) => data.Latitude)
-  var longitudeTotal = rocketData.map((data) => data.Longitude)
-  var accelerationDataTotal = rocketData.map((data) => data.Acc_net)
-  var altitudeTotal = rocketData.map((data) => data.Altitude)
-  var voltageTotal = rocketData.map((data) => data.Voltage)
+  var rollRadiansTotal = rocketData.map((data) => data.Roll_Radians).length < 50 ? rocketData.map((data) => data.Roll_Radians) : rocketData.map((data) => data.Roll_Radians).splice(rocketData.map((data) => data.Roll_Radians).length - 52, rocketData.map((data) => data.Roll_Radians).length - 1)
+  var yawRadiansTotal = rocketData.map((data) => data.Yaw_Radians).length < 50 ? rocketData.map((data) => data.Yaw_Radians) : rocketData.map((data) => data.Yaw_Radians).splice(rocketData.map((data) => data.Yaw_Radians).length - 52, rocketData.map((data) => data.Yaw_Radians).length - 1)
+  var pitchRadiansTotal = rocketData.map((data) => data.Pitch_Radians).length < 50 ? rocketData.map((data) => data.Pitch_Radians) : rocketData.map((data) => data.Pitch_Radians).splice(rocketData.map((data) => data.Pitch_Radians).length - 52, rocketData.map((data) => data.Pitch_Radians).length - 1)
+  var latitudeTotal = rocketData.map((data) => data.Latitude).length < 50 ? rocketData.map((data) => data.Latitude) : rocketData.map((data) => data.Latitude).splice(rocketData.map((data) => data.Latitude).length - 52, rocketData.map((data) => data.Latitude).length - 1)
+  var longitudeTotal = rocketData.map((data) => data.Longitude).length < 50 ? rocketData.map((data) => data.Longitude) : rocketData.map((data) => data.Longitude).splice(rocketData.map((data) => data.Longitude).length - 52, rocketData.map((data) => data.Longitude).length - 1)
+  var accelerationDataTotal = rocketData.map((data) => data.Acc_net).length < 50 ? rocketData.map((data) => data.Acc_net) : rocketData.map((data) => data.Acc_net).splice(rocketData.map((data) => data.Acc_net).length - 52, rocketData.map((data) => data.Acc_net).length - 1)
+  var altitudeTotal = rocketData.map((data) => data.Altitude).length < 50 ? rocketData.map((data) => data.Altitude) : rocketData.map((data) => data.Altitude).splice(rocketData.map((data) => data.Altitude).length - 52, rocketData.map((data) => data.Altitude).length - 1)
+  var voltageTotal = rocketData.map((data) => data.Voltage).length < 50 ? rocketData.map((data) => data.Voltage) : rocketData.map((data) => data.Voltage).splice(rocketData.map((data) => data.Voltage).length - 52, rocketData.map((data) => data.Voltage).length - 1)
 
   // const [count, setCount] = useState(0)
 
