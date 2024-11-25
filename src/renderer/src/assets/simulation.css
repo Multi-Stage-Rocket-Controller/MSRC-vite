@@ -1,46 +1,12 @@
 @import './base.css';
 
-h1 {
-  font-size: 2em;
-  font-weight: 700;
-  font-family: sans-serif;
-}
-
-.splash-div {
+.master {
+  border: 3px solid green;
+  width: 90vw;
+  height: 90vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  height: 100vh;
-  padding: 10px;
-  text-align: center;
-  margin: 10px;
-}
-
-.button-style {
-  background-color: black;
-  color: white;
-  text-align: center;
-  display: block;
-  justify-content: center;
-  padding: 10px;
-  margin: 10px;
-  border-radius: 12px;
-  border: 3px solid #aa0404;
-  width: 100px;
-  font-family: Orbitron, sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 500;
-  font-style: normal;
-}
-.rocket-container {
-  display: flex;
-  flex: 1;
-  box-sizing: border-box;
-  border: 1px solid white;
-  background-color: rgb(74, 246, 38, 0.3);
-  border-radius: 10px;
-  justify-content: center;
 }
 
 .header {
@@ -54,6 +20,13 @@ h1 {
   display: flex;
   width: 100%;
   flex: 1;
+}
+
+.buttons {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
 .left-side {
@@ -73,23 +46,91 @@ h1 {
   aspect-ratio: 1;
 }
 
+.current-button {
+  font-family: inherit;
+  color: var(--figma-white);
+  cursor: pointer;
+  background-color: black;
+  border: 3px solid var(--figma-green);
+  text-align: center;
+  border-radius: 20px;
+  padding: 10px 20px;
+  transition: background-color 0.3s, stroke 0.3s; /* Smooth transition */
+}
+
+.current-button:hover {
+  background-color: var(--figma-green);
+}
+
+.current-button:active {
+  background-color: var(--figma-white);
+  transform: scale(0.9);
+}
+
+.start-button {
+  font-family: inherit;
+  cursor: pointer;
+  background-color: black;
+  border: 3px solid var(--figma-green);
+  text-align: center;
+  border-radius: 20px;
+  padding: 10px 20px;
+  color: white;
+  transition: background-color 0.3s, stroke 0.3s; /* Smooth transition */
+}
+
+.start-button:hover {
+  background-color: var(--figma-green);
+}
+
+.stop-button {
+  font-family: inherit;
+  cursor: pointer;
+  background-color: black;
+  border: 3px solid var(--figma-red);
+  text-align: center;
+  border-radius: 20px;
+  padding: 10px 20px;
+  color: white;
+  transition: background-color 0.3s, stroke 0.1s; /* Smooth transition */
+}
+
+.stop-button:hover {
+  background-color: var(--figma-red);
+}
+
 .control-buttons {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   margin: 10px;
+  width: 215px; /* Hard-coded for now */
 }
 
 .back-button {
-  background-color: transparent;
+  background-color: black;
   cursor: pointer;
   border: 3px solid var(--figma-green); /* Optional: Add border color */
   border-radius: 50%; /* Make the button circular */
   width: 40px; /* Adjust as needed */
   height: 40px; /* Adjust as needed */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, stroke 0.3s; /* Smooth transition */
+}
+
+.back-button:hover {
+  background-color: var(--figma-green);
 }
 
 .back-button svg {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
+  stroke: var(--figma-green);
+  transition: stroke 0.3s; /* Smooth transition */
+}
+
+.back-button:hover svg {
+  stroke: white;
 }

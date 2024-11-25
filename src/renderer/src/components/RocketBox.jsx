@@ -4,7 +4,14 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import RedRocket from '../assets/red_rocket.glb'
 
-const RocketBox = ({ width = 900, height = 300, roll = 0, pitch = 0, yaw = 0 }) => {
+const RocketBox = ({
+  width = 300,
+  height = 300,
+  roll = 0,
+  pitch = 0,
+  yaw = 0,
+  currentCamera = 'xy', // Added prop
+}) => {
   const containerRef = useRef(null)
   const sceneRef = useRef(null)
   const rendererRef = useRef(null)
@@ -13,6 +20,7 @@ const RocketBox = ({ width = 900, height = 300, roll = 0, pitch = 0, yaw = 0 }) 
   const animationRef = useRef(null)
 
   useEffect(() => {
+    console.log('RocketBox Camera:', { currentCamera })
     // Initialize Scene
     const scene = new THREE.Scene()
     sceneRef.current = scene
@@ -42,7 +50,7 @@ const RocketBox = ({ width = 900, height = 300, roll = 0, pitch = 0, yaw = 0 }) 
     })
 
     // Initialize Cameras
-    const aspect = (width / 3) / height
+    const aspect = width / height
     camerasRef.current.xy = new THREE.PerspectiveCamera(50, aspect, 0.1, 1000)
     camerasRef.current.xy.position.set(0, 0, 150)
     camerasRef.current.xy.lookAt(0, 0, 0)
@@ -80,20 +88,12 @@ const RocketBox = ({ width = 900, height = 300, roll = 0, pitch = 0, yaw = 0 }) 
       animationRef.current = requestAnimationFrame(animate)
       renderer.clear()
 
-      const viewports = [
-        { x: 0, y: 0, width: width / 3, height },
-        { x: width / 3, y: 0, width: width / 3, height },
-        { x: (2 * width) / 3, y: 0, width: width / 3, height },
-      ]
-
-      const cameraKeys = ['xy', 'yz', 'xz']
-
-      viewports.forEach((vp, index) => {
-        renderer.setViewport(vp.x, vp.y, vp.width, vp.height)
-        renderer.setScissor(vp.x, vp.y, vp.width, vp.height)
+      if (currentCamera && camerasRef.current[currentCamera]) {
+        renderer.setViewport(0, 0, width, height)
+        renderer.setScissor(0, 0, width, height)
         renderer.setScissorTest(true)
-        renderer.render(scene, camerasRef.current[cameraKeys[index]])
-      })
+        renderer.render(scene, camerasRef.current[currentCamera])
+      }
     }
     animate()
 
@@ -103,7 +103,7 @@ const RocketBox = ({ width = 900, height = 300, roll = 0, pitch = 0, yaw = 0 }) 
       const newHeight = containerRef.current.clientHeight
       renderer.setSize(newWidth, newHeight)
 
-      const newAspect = (newWidth / 3) / newHeight
+      const newAspect = newWidth / newHeight
       Object.values(camerasRef.current).forEach(camera => {
         camera.aspect = newAspect
         camera.updateProjectionMatrix()
@@ -121,16 +121,16 @@ const RocketBox = ({ width = 900, height = 300, roll = 0, pitch = 0, yaw = 0 }) 
         containerRef.current.removeChild(renderer.domElement)
       }
     }
-  }, [width, height])
+  }, [width, height, currentCamera])
 
   useEffect(() => {
-    console.log('Updating Rocket Rotation:', { roll, pitch, yaw })
+    // console.log('Updating Rocket Rotation:', { roll, pitch, yaw })
     if (rocketRef.current) {
       rocketRef.current.rotation.set(roll, pitch, yaw)
     }
   }, [roll, pitch, yaw])
 
-  return <div ref={containerRef} style={{ width, height, display: 'block' }} />
+  return <div ref={containerRef} style={{ width, height, display: 'block', position: 'relative' }} />
 }
 
 export default RocketBox
