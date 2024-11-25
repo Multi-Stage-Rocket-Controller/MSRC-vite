@@ -3,7 +3,7 @@ import { Line } from 'react-chartjs-2'
 import React, { useEffect, useRef, useState } from 'react'
 import '../assets/chart.css'
 
-const Chart = ({ rocketData = [], current = 0 }) => {
+const Chart = ({ rocketData = [] }) => {
   var labelArrayTotal = rocketData.map((data) => data.timestamp)
   var rollRadiansTotal = rocketData.map((data) => data.Roll_Radians)
   var pitchRadiansTotal = rocketData.map((data) => data.Pitch_Radians)
@@ -86,7 +86,11 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                       color: 'white'
                     }
                   }
-                }
+                },
+                animation: {
+                  duration: 0.045, // Disable animation duration
+                  easing: 'linear' // Set easing to linear
+                },
               }}
             />
           </div>
@@ -102,7 +106,6 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                     data: pitchRadiansTotal,
                     borderColor: '#FFFFFF',
                     pointRadius: 0
-                    
                   }
                 ]
               }}
@@ -171,7 +174,11 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                       color: 'white'
                     }
                   }
-                }
+                },
+                animation: {
+                  duration: 0.045, // Disable animation duration
+                  easing: 'linear' // Set easing to linear
+                },
               }}
             />
           </div>
@@ -213,7 +220,11 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                       color: 'white'
                     }
                   }
-                }
+                },
+                animation: {
+                  duration: 0.045, // Disable animation duration
+                  easing: 'linear' // Set easing to linear
+                },
               }}
             />
           </div>
@@ -255,7 +266,11 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                       color: 'white'
                     }
                   }
-                }
+                },
+                animation: {
+                  duration: 0.045, // Disable animation duration
+                  easing: 'linear' // Set easing to linear
+                },
               }}
             />
           </div>
@@ -285,7 +300,7 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                     ticks: { color: 'white' },
                     title: {
                       display: true,
-                      text: 'Acceleration (m/s^2)',
+                      text: 'Acceleration (m/s²)',
                       color: 'white'
                     }
                   },
@@ -297,7 +312,11 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                       color: 'white'
                     }
                   }
-                }
+                },
+                animation: {
+                  duration: 0.045, // Disable animation duration
+                  easing: 'linear' // Set easing to linear
+                },
               }}
             />
           </div>
@@ -339,7 +358,11 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                       color: 'white'
                     }
                   }
-                }
+                },
+                animation: {
+                  duration: 0.045, // Disable animation duration
+                  easing: 'linear' // Set easing to linear
+                },
               }}
             />
           </div>
@@ -381,12 +404,15 @@ const Chart = ({ rocketData = [], current = 0 }) => {
                       color: 'white'
                     }
                   }
-                }
+                },
+                animation: {
+                  duration: 0.045, // Disable animation duration
+                  easing: 'linear' // Set easing to linear
+                },
               }}
             />
           </div>
         )}
-        {/* Render content based on the active tab */}
       </div>
     </div>
   )
