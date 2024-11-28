@@ -87,50 +87,48 @@ const SimulationScreen = () => {
         </div>
       </div>
       <div className="main">
-        <div className="left-side">
-          <ul className="buttons">
-            <li>
-              <button className="current-button" onClick={() => handleCameraChange('xy')}>
-                Roll: {roll}
-              </button>
-            </li>
-            <li>
-              <button className="current-button" onClick={() => handleCameraChange('yz')}>
-                Pitch: {pitch}
-              </button>
-            </li>
-            <li>
-              <button className="current-button" onClick={() => handleCameraChange('xz')}>
-                Yaw: {yaw}
-              </button>
-            </li>
-            <li>
-              <button className="current-button">
-                Acceleration: {data.length > 0 ? data[data.length - 1].Acc_net : 0}
-              </button>
-            </li>
-            <li>
-              <button className="current-button">
-                Altitude: {data.length > 0 ? data[data.length - 1].Altitude : 0}
-              </button>
-            </li>
-            <li>
-              <button className="current-button">
-                Voltage: {data.length > 0 ? data[data.length - 1].Voltage : 0}
-              </button>
-            </li>
-            <li>
-              <button className="current-button">
-                Longitude: {data.length > 0 ? data[data.length - 1].Longitude : 0}
-              </button>
-            </li>
-            <li>
-              <button className="current-button">
-                Latitude: {data.length > 0 ? data[data.length - 1].Latitude : 0}
-              </button>
-            </li>
-          </ul>
-        </div>
+        <ul className="buttons">
+          <li>
+            <button className="current-button" onClick={() => handleCameraChange('xy')}>
+              Roll: {roll}
+            </button>
+          </li>
+          <li>
+            <button className="current-button" onClick={() => handleCameraChange('yz')}>
+              Pitch: {pitch}
+            </button>
+          </li>
+          <li>
+            <button className="current-button" onClick={() => handleCameraChange('xz')}>
+              Yaw: {yaw}
+            </button>
+          </li>
+          <li>
+            <button className="current-button">
+              Acceleration: {data.length > 0 ? data[data.length - 1].Acc_net : 0}
+            </button>
+          </li>
+          <li>
+            <button className="current-button">
+              Altitude: {data.length > 0 ? data[data.length - 1].Altitude : 0}
+            </button>
+          </li>
+          <li>
+            <button className="current-button">
+              Voltage: {data.length > 0 ? data[data.length - 1].Voltage : 0}
+            </button>
+          </li>
+          <li>
+            <button className="current-button">
+              Longitude: {data.length > 0 ? data[data.length - 1].Longitude : 0}
+            </button>
+          </li>
+          <li>
+            <button className="current-button">
+              Latitude: {data.length > 0 ? data[data.length - 1].Latitude : 0}
+            </button>
+          </li>
+        </ul>
         <div className="right-side">
           <div className="threeDiv">
             <div ref={threeDivRef1}>

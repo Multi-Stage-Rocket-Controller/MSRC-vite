@@ -27,9 +27,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-}
-
-.left-side {
+  padding: 10px;
   border: 1px solid var(--figma-red);
   width: 50%;
   margin: 10px;
