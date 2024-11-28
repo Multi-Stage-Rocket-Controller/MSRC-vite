@@ -10,7 +10,7 @@ const RocketBox = ({
   roll = 0,
   pitch = 0,
   yaw = 0,
-  currentCamera = 'xy', // Added prop
+  currentCamera = 'xy',
 }) => {
   const containerRef = useRef(null)
   const sceneRef = useRef(null)
@@ -20,7 +20,7 @@ const RocketBox = ({
   const animationRef = useRef(null)
 
   useEffect(() => {
-    console.log('RocketBox Camera:', { currentCamera })
+    // console.log('RocketBox Camera:', { currentCamera })
     // Initialize Scene
     const scene = new THREE.Scene()
     sceneRef.current = scene
