@@ -74,7 +74,7 @@ const SimulationScreen = () => {
             <polyline points="12 5 5 12 12 19"></polyline>
           </svg>
         </button>
-        <div className="title" style={{ fontSize: '40px' }}>
+        <div className="title" style={{ fontSize: '40px', marginLeft: '20px' }}>
           Rocket Visualizer
         </div>
         <div className="control-buttons">
@@ -87,48 +87,51 @@ const SimulationScreen = () => {
         </div>
       </div>
       <div className="main">
-        <ul className="buttons">
-          <li>
-            <button className="current-button" onClick={() => handleCameraChange('xy')}>
-              Roll: {roll}
-            </button>
-          </li>
-          <li>
-            <button className="current-button" onClick={() => handleCameraChange('yz')}>
-              Pitch: {pitch}
-            </button>
-          </li>
-          <li>
-            <button className="current-button" onClick={() => handleCameraChange('xz')}>
-              Yaw: {yaw}
-            </button>
-          </li>
-          <li>
-            <button className="current-button">
-              Acceleration: {data.length > 0 ? data[data.length - 1].Acc_net : 0}
-            </button>
-          </li>
-          <li>
-            <button className="current-button">
-              Altitude: {data.length > 0 ? data[data.length - 1].Altitude : 0}
-            </button>
-          </li>
-          <li>
-            <button className="current-button">
-              Voltage: {data.length > 0 ? data[data.length - 1].Voltage : 0}
-            </button>
-          </li>
-          <li>
-            <button className="current-button">
-              Longitude: {data.length > 0 ? data[data.length - 1].Longitude : 0}
-            </button>
-          </li>
-          <li>
-            <button className="current-button">
-              Latitude: {data.length > 0 ? data[data.length - 1].Latitude : 0}
-            </button>
-          </li>
-        </ul>
+        <div className="left-side">
+          <ul className="buttons">
+            <li>
+              <button className="current-button" onClick={() => {handleCameraChange('xy'); handleTabChange(0);}}>
+                Roll: {roll}
+              </button>
+            </li>
+            <li>
+              <button className="current-button" onClick={() => {handleCameraChange('yz');handleTabChange(1)}}>
+                Pitch: {pitch}
+              </button>
+            </li>
+            <li>
+              <button className="current-button" onClick={() => handleCameraChange('xz')}>
+                Yaw: {yaw}
+              </button>
+            </li>
+            <li>
+              <button className="current-button">
+                Acceleration: {data.length > 0 ? data[data.length - 1].Acc_net : 0}
+              </button>
+            </li>
+            <li>
+              <button className="current-button">
+                Altitude: {data.length > 0 ? data[data.length - 1].Altitude : 0}
+              </button>
+            </li>
+            <li>
+              <button className="current-button">
+                Voltage: {data.length > 0 ? data[data.length - 1].Voltage : 0}
+              </button>
+            </li>
+            <li>
+              <button className="current-button">
+                Longitude: {data.length > 0 ? data[data.length - 1].Longitude : 0}
+              </button>
+            </li>
+            <li>
+              <button className="current-button">
+                Latitude: {data.length > 0 ? data[data.length - 1].Latitude : 0}
+              </button>
+            </li>
+          </ul>
+          <Chart rocketData={data} currentTab={activeTab}/>
+        </div>
         <div className="right-side">
           <div className="threeDiv">
             <div ref={threeDivRef1}>
@@ -137,7 +140,7 @@ const SimulationScreen = () => {
           </div>
         </div>
       </div>
-      <Chart rocketData={data} />
+              {/* <Chart rocketData={data} currentTab={activeTab}/> */}
     </div>
   )
 }

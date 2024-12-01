@@ -28,7 +28,11 @@
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   padding: 10px;
-  border: 1px solid var(--figma-red);
+  margin: 10px;
+}
+
+.left-side {
+  border: 1px solid var(--figma-green);
   width: 50%;
   margin: 10px;
 }
@@ -53,6 +57,7 @@
   text-align: center;
   border-radius: 20px;
   padding: 10px 20px;
+  width: 100%;
   transition: background-color 0.3s, stroke 0.3s; /* Smooth transition */
 }
 

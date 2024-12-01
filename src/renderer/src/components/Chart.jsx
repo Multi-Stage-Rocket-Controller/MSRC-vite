@@ -1,417 +1,113 @@
 import { Chart as ChartJS } from 'chart.js/auto'
 import { Line } from 'react-chartjs-2'
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import '../assets/chart.css'
 
-const Chart = ({ rocketData = [] }) => {
-  var labelArrayTotal = rocketData.map((data) => data.timestamp)
-  var rollRadiansTotal = rocketData.map((data) => data.Roll_Radians)
-  var pitchRadiansTotal = rocketData.map((data) => data.Pitch_Radians)
-  var yawRadiansTotal = rocketData.map((data) => data.Yaw_Radians)
-  var latitudeTotal = rocketData.map((data) => data.Latitude)
-  var longitudeTotal = rocketData.map((data) => data.Longitude)
-  var accelerationDataTotal = rocketData.map((data) => data.Acc_net)
-  var altitudeTotal = rocketData.map((data) => data.Altitude)
-  var voltageTotal = rocketData.map((data) => data.Voltage)
+const Chart = ({ rocketData = [], currentTab = 0 }) => {
+  console.log('Current Tab:', currentTab)
+  
+  const labelArrayTotal = rocketData.map((data) => data.timestamp)
+  const rollRadiansTotal = rocketData.map((data) => data.Roll_Radians)
+  const pitchRadiansTotal = rocketData.map((data) => data.Pitch_Radians)
+  const yawRadiansTotal = rocketData.map((data) => data.Yaw_Radians)
+  const latitudeTotal = rocketData.map((data) => data.Latitude)
+  const longitudeTotal = rocketData.map((data) => data.Longitude)
+  const accelerationDataTotal = rocketData.map((data) => data.Acc_net)
+  const altitudeTotal = rocketData.map((data) => data.Altitude)
+  const voltageTotal = rocketData.map((data) => data.Voltage)
 
-  const [activeTab, setActiveTab] = useState(0)
+  // Configuration for each tab
+  const chartConfigs = [
+    {
+      label: 'Roll Radians',
+      data: rollRadiansTotal,
+      yTitle: 'Radians',
+    },
+    {
+      label: 'Pitch Radians',
+      data: pitchRadiansTotal,
+      yTitle: 'Radians',
+    },
+    {
+      label: 'Yaw Radians',
+      data: yawRadiansTotal,
+      yTitle: 'Radians',
+    },
+    {
+      label: 'Latitude',
+      data: latitudeTotal,
+      yTitle: 'Latitude',
+    },
+    {
+      label: 'Longitude',
+      data: longitudeTotal,
+      yTitle: 'Longitude',
+    },
+    {
+      label: 'Acceleration',
+      data: accelerationDataTotal,
+      yTitle: 'Acceleration (m/s²)',
+    },
+    {
+      label: 'Altitude',
+      data: altitudeTotal,
+      yTitle: 'Altitude (m)',
+    },
+    {
+      label: 'Voltage',
+      data: voltageTotal,
+      yTitle: 'Voltage',
+    },
+  ]
 
-  const handleTabClick = (index) => {
-    setActiveTab(index)
-  }
+  const currentConfig = chartConfigs[currentTab]
 
   return (
     <div className="bottom-container">
-      <div className="bottom-box left-box">
-        <div className="section" onClick={() => handleTabClick(0)}>
-          Current Roll: {rollRadiansTotal[rollRadiansTotal.length - 1]}
-        </div>
-        <div className="section" onClick={() => handleTabClick(1)}>
-          Current Pitch: {pitchRadiansTotal[pitchRadiansTotal.length - 1]}
-        </div>
-        <div className="section" onClick={() => handleTabClick(2)}>
-          Current Yaw: {yawRadiansTotal[yawRadiansTotal.length - 1]}
-        </div>
-        <div className="section" onClick={() => handleTabClick(3)}>
-          Current Latitude: {latitudeTotal[latitudeTotal.length - 1]}
-        </div>
-        <div className="section" onClick={() => handleTabClick(4)}>
-          Current Longitude: {longitudeTotal[longitudeTotal.length - 1]}
-        </div>
-        <div className="section" onClick={() => handleTabClick(5)}>
-          Current Acceleration: {accelerationDataTotal[accelerationDataTotal.length - 1]}
-        </div>
-        <div className="section" onClick={() => handleTabClick(6)}>
-          Current Altitude: {altitudeTotal[altitudeTotal.length - 1]}
-        </div>
-        <div className="section" onClick={() => handleTabClick(7)}>
-          Current Voltage: {voltageTotal[voltageTotal.length - 1]}
-        </div>
-      </div>
-      <div style={{ flex: 1 }} className="tab-content bottom-box">
-        {activeTab === 0 && (
-          <div className="bottom-box">
-            <Line
-              data={{
-                labels: labelArrayTotal,
-                datasets: [
-                  {
-                    label: 'Roll Radians',
-                    data: rollRadiansTotal,
-                    borderColor: '#FFFFFF',
-                    pointRadius: 0
-                  }
-                ]
-              }}
-              options={{
-                plugins: {
-                  legend: {
-                    display: false
-                  }
+      <div className="bottom-box">
+        {currentConfig && (
+          <Line
+            data={{
+              labels: labelArrayTotal,
+              datasets: [
+                {
+                  label: currentConfig.label,
+                  data: currentConfig.data,
+                  borderColor: '#FFFFFF',
+                  pointRadius: 0,
                 },
-                scales: {
-                  y: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Radians',
-                      color: 'white'
-                    }
+              ],
+            }}
+            options={{
+              plugins: {
+                legend: {
+                  display: false,
+                },
+              },
+              scales: {
+                y: {
+                  ticks: { color: 'white' },
+                  title: {
+                    display: true,
+                    text: currentConfig.yTitle,
+                    color: 'white',
                   },
-                  x: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Time (s)',
-                      color: 'white'
-                    }
-                  }
                 },
-                animation: {
-                  duration: 0.045, // Disable animation duration
-                  easing: 'linear' // Set easing to linear
-                },
-              }}
-            />
-          </div>
-        )}
-        {activeTab === 1 && (
-          <div>
-            <Line
-              data={{
-                labels: labelArrayTotal,
-                datasets: [
-                  {
-                    label: 'Pitch Radians',
-                    data: pitchRadiansTotal,
-                    borderColor: '#FFFFFF',
-                    pointRadius: 0
-                  }
-                ]
-              }}
-              options={{
-                plugins: {
-                  legend: {
-                    display: false
-                  }
-                },
-                scales: {
-                  y: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Radians',
-                      color: 'white'
-                    }
+                x: {
+                  ticks: { color: 'white' },
+                  title: {
+                    display: true,
+                    text: 'Time (s)',
+                    color: 'white',
                   },
-                  x: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Time (s)',
-                      color: 'white'
-                    }
-                  }
-                }
-              }}
-            />
-          </div>
-        )}
-        {activeTab === 2 && (
-          <div>
-            <Line
-              data={{
-                labels: labelArrayTotal,
-                datasets: [
-                  {
-                    label: 'Yaw Radians',
-                    data: yawRadiansTotal,
-                    borderColor: '#FFFFFF',
-                    pointRadius: 0
-                  }
-                ]
-              }}
-              options={{
-                plugins: {
-                  legend: {
-                    display: false
-                  }
                 },
-                scales: {
-                  y: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Radians',
-                      color: 'white'
-                    }
-                  },
-                  x: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Time (s)',
-                      color: 'white'
-                    }
-                  }
-                },
-                animation: {
-                  duration: 0.045, // Disable animation duration
-                  easing: 'linear' // Set easing to linear
-                },
-              }}
-            />
-          </div>
-        )}
-        {activeTab === 3 && (
-          <div>
-            <Line
-              data={{
-                labels: labelArrayTotal,
-                datasets: [
-                  {
-                    label: 'Latitude',
-                    data: latitudeTotal,
-                    borderColor: '#FFFFFF',
-                    pointRadius: 0
-                  }
-                ]
-              }}
-              options={{
-                plugins: {
-                  legend: {
-                    display: false
-                  }
-                },
-                scales: {
-                  y: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Latitude',
-                      color: 'white'
-                    }
-                  },
-                  x: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Time (s)',
-                      color: 'white'
-                    }
-                  }
-                },
-                animation: {
-                  duration: 0.045, // Disable animation duration
-                  easing: 'linear' // Set easing to linear
-                },
-              }}
-            />
-          </div>
-        )}
-        {activeTab === 4 && (
-          <div>
-            <Line
-              data={{
-                labels: labelArrayTotal,
-                datasets: [
-                  {
-                    label: 'Longitude',
-                    data: longitudeTotal,
-                    borderColor: '#FFFFFF',
-                    pointRadius: 0
-                  }
-                ]
-              }}
-              options={{
-                plugins: {
-                  legend: {
-                    display: false
-                  }
-                },
-                scales: {
-                  y: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Longitude',
-                      color: 'white'
-                    }
-                  },
-                  x: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Time (s)',
-                      color: 'white'
-                    }
-                  }
-                },
-                animation: {
-                  duration: 0.045, // Disable animation duration
-                  easing: 'linear' // Set easing to linear
-                },
-              }}
-            />
-          </div>
-        )}
-        {activeTab === 5 && (
-          <div>
-            <Line
-              data={{
-                labels: labelArrayTotal,
-                datasets: [
-                  {
-                    label: 'Acceleration',
-                    data: accelerationDataTotal,
-                    borderColor: '#FFFFFF',
-                    pointRadius: 0
-                  }
-                ]
-              }}
-              options={{
-                plugins: {
-                  legend: {
-                    display: false
-                  }
-                },
-                scales: {
-                  y: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Acceleration (m/s²)',
-                      color: 'white'
-                    }
-                  },
-                  x: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Time (s)',
-                      color: 'white'
-                    }
-                  }
-                },
-                animation: {
-                  duration: 0.045, // Disable animation duration
-                  easing: 'linear' // Set easing to linear
-                },
-              }}
-            />
-          </div>
-        )}
-        {activeTab === 6 && (
-          <div>
-            <Line
-              data={{
-                labels: labelArrayTotal,
-                datasets: [
-                  {
-                    label: 'Altitude',
-                    data: altitudeTotal,
-                    borderColor: '#FFFFFF',
-                    pointRadius: 0
-                  }
-                ]
-              }}
-              options={{
-                plugins: {
-                  legend: {
-                    display: false
-                  }
-                },
-                scales: {
-                  y: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Altitude (m)',
-                      color: 'white'
-                    }
-                  },
-                  x: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Time (s)',
-                      color: 'white'
-                    }
-                  }
-                },
-                animation: {
-                  duration: 0.045, // Disable animation duration
-                  easing: 'linear' // Set easing to linear
-                },
-              }}
-            />
-          </div>
-        )}
-        {activeTab === 7 && (
-          <div>
-            <Line
-              data={{
-                labels: labelArrayTotal,
-                datasets: [
-                  {
-                    label: 'Voltage',
-                    data: voltageTotal,
-                    borderColor: '#FFFFFF',
-                    pointRadius: 0
-                  }
-                ]
-              }}
-              options={{
-                plugins: {
-                  legend: {
-                    display: false
-                  }
-                },
-                scales: {
-                  y: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Voltage',
-                      color: 'white'
-                    }
-                  },
-                  x: {
-                    ticks: { color: 'white' },
-                    title: {
-                      display: true,
-                      text: 'Time (s)',
-                      color: 'white'
-                    }
-                  }
-                },
-                animation: {
-                  duration: 0.045, // Disable animation duration
-                  easing: 'linear' // Set easing to linear
-                },
-              }}
-            />
-          </div>
+              },
+              animation: {
+                duration: 0.045, // Disable animation duration
+                easing: 'linear', // Set easing to linear
+              },
+            }}
+          />
         )}
       </div>
     </div>

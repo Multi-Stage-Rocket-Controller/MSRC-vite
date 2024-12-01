@@ -1,11 +1,11 @@
 .bottom-container {
   display: flex;
   flex: 1;
-  height: 300px;
+  /* height: 300px; */
   box-sizing: border-box;
   border: 8px solid rgb(55, 82, 55);
   background-color: rgba(74, 164, 51, 0.34);
-  width: 900px;
+  /* width: 900px; */
   border-radius: 10px;
   justify-content: center;
 }
