@@ -1,11 +1,9 @@
 .bottom-container {
   display: flex;
   flex: 1;
-  /* height: 300px; */
   box-sizing: border-box;
   border: 8px solid rgb(55, 82, 55);
   background-color: rgba(74, 164, 51, 0.34);
-  /* width: 900px; */
   border-radius: 10px;
   justify-content: center;
 }
@@ -16,21 +14,4 @@
   flex-direction: column;
   align-content: center;
   justify-content: center;
-}
-.left-box {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-.section {
-  width: 45%;
-  height: 20%;
-  box-sizing: border-box;
-  border: 2px solid rgb(55, 82, 55);
-  border-radius: 10px;
-  color: white;
-  margin: 2px;
-  font-size: 12px;
-  text-align: center;
-  padding: 12px 0;
 }

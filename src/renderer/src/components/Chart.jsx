@@ -103,8 +103,8 @@ const Chart = ({ rocketData = [], currentTab = 0 }) => {
                 },
               },
               animation: {
-                duration: 0.045, // Disable animation duration
-                easing: 'linear', // Set easing to linear
+                duration: 0.045, 
+                easing: 'linear',
               },
             }}
           />
