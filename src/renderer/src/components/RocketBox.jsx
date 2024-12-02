@@ -16,11 +16,10 @@ const RocketBox = ({
   const sceneRef = useRef(null)
   const rendererRef = useRef(null)
   const camerasRef = useRef({})
-  const rocketRef = useRef(null)
+  const pivotRef = useRef(null) // Added pivot reference
   const animationRef = useRef(null)
 
   useEffect(() => {
-    // console.log('RocketBox Camera:', { currentCamera })
     // Initialize Scene
     const scene = new THREE.Scene()
     sceneRef.current = scene
@@ -63,21 +62,28 @@ const RocketBox = ({
     camerasRef.current.xz.position.set(0, 150, 0)
     camerasRef.current.xz.lookAt(0, 0, 0)
 
+    // Create Pivot
+    const pivot = new THREE.Object3D()
+    scene.add(pivot)
+    pivotRef.current = pivot
+
     // Load Rocket Model
     const loader = new GLTFLoader()
     loader.load(
       RedRocket,
       gltf => {
         const model = gltf.scene
-        rocketRef.current = model
+        pivot.add(model) // Add model to pivot
+
+        // Scale the model
         model.scale.set(5, 5, 5)
 
         // Center the model
         const bbox = new THREE.Box3().setFromObject(model)
         const center = bbox.getCenter(new THREE.Vector3())
-        model.position.sub(center)
+        model.position.sub(center) // Shift model to center
 
-        scene.add(model)
+        // Optionally, adjust pivot position if needed
       },
       undefined,
       error => console.error('Error loading model:', error)
@@ -124,9 +130,9 @@ const RocketBox = ({
   }, [width, height, currentCamera])
 
   useEffect(() => {
-    // console.log('Updating Rocket Rotation:', { roll, pitch, yaw })
-    if (rocketRef.current) {
-      rocketRef.current.rotation.set(roll, pitch, yaw)
+    // Update Rocket Rotation via Pivot
+    if (pivotRef.current) {
+      pivotRef.current.rotation.set(roll, pitch, yaw)
     }
   }, [roll, pitch, yaw])
 
