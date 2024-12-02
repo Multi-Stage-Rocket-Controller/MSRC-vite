@@ -16,7 +16,7 @@ const RocketBox = ({
   const sceneRef = useRef(null)
   const rendererRef = useRef(null)
   const camerasRef = useRef({})
-  const pivotRef = useRef(null) // Added pivot reference
+  const pivotRef = useRef(null) 
   const animationRef = useRef(null)
 
   useEffect(() => {
@@ -34,14 +34,12 @@ const RocketBox = ({
     // Add Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 1)
     scene.add(ambientLight)
-
     const directionalLights = [
       { position: [0, 100, 100], intensity: 5 },
       { position: [100, 0, 100], intensity: 5 },
       { position: [100, 100, 0], intensity: 5 },
       { position: [0, 100, 0], intensity: 5 },
     ]
-
     directionalLights.forEach(lightInfo => {
       const light = new THREE.DirectionalLight(0xffffff, lightInfo.intensity)
       light.position.set(...lightInfo.position).normalize()
@@ -82,8 +80,6 @@ const RocketBox = ({
         const bbox = new THREE.Box3().setFromObject(model)
         const center = bbox.getCenter(new THREE.Vector3())
         model.position.sub(center) // Shift model to center
-
-        // Optionally, adjust pivot position if needed
       },
       undefined,
       error => console.error('Error loading model:', error)
@@ -130,7 +126,6 @@ const RocketBox = ({
   }, [width, height, currentCamera])
 
   useEffect(() => {
-    // Update Rocket Rotation via Pivot
     if (pivotRef.current) {
       pivotRef.current.rotation.set(roll, pitch, yaw)
     }
