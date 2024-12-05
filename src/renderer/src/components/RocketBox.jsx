@@ -126,7 +126,6 @@ const RocketBox = ({
   useEffect(() => {
     if (pivotRef.current) {
       pivotRef.current.rotation.set(roll, pitch, yaw)
-      console.log("Changed rotation")
     }
   }, [roll, pitch, yaw])
 
