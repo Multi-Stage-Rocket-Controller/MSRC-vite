@@ -140,7 +140,7 @@ const SimulationScreen = () => {
       </div>
       <div className="main">
         <div className="left-side">
-          <div>
+          <div className='buttons-container'>
           <ul className="buttons">
             <li>
               <button className="current-button" onClick={() => {handleCameraChange('xy'); handleTabChange(0);}}>
