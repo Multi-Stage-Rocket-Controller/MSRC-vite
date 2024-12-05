@@ -43,12 +43,16 @@
   justify-content: stretch;
 }
 
+
 .right-side {
-  border: 8px solid var(--figma-yellow);
+  border: 8px solid var(--figma-light-green);
   border-radius: 10px;
-  width: 50%;
   margin: 10px;
+  width: 50%;
+  display: flex;
+  justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 .rocket {
@@ -61,7 +65,7 @@
   color: var(--figma-white);
   cursor: pointer;
   background-color: black;
-  border: 3px solid var(--figma-green);
+  border: 3px solid var(--figma-light-green);
   text-align: center;
   border-radius: 20px;
   padding: 10px 20px;
@@ -70,7 +74,7 @@
 }
 
 .current-button:hover {
-  background-color: var(--figma-green);
+  background-color: var(--figma-light-green);
 }
 
 .current-button:active {

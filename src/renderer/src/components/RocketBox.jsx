@@ -5,8 +5,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import RedRocket from '../assets/red_rocket.glb'
 
 const RocketBox = ({
-  width = 450,
   height = 480,
+  width = 300,
   roll = 0,
   pitch = 0,
   yaw = 0,
