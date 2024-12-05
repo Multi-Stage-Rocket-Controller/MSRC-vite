@@ -4,8 +4,6 @@ import React from 'react'
 import '../assets/chart.css'
 
 const Chart = ({ rocketData = [], currentTab = 0 }) => {
-  console.log('Current Tab:', currentTab)
-  
   const labelArrayTotal = rocketData.map((data) => data.timestamp)
   const rollRadiansTotal = rocketData.map((data) => data.Roll_Radians)
   const pitchRadiansTotal = rocketData.map((data) => data.Pitch_Radians)
@@ -18,52 +16,22 @@ const Chart = ({ rocketData = [], currentTab = 0 }) => {
 
   // Configuration for each tab
   const chartConfigs = [
-    {
-      label: 'Roll Radians',
-      data: rollRadiansTotal,
-      yTitle: 'Radians',
-    },
-    {
-      label: 'Pitch Radians',
-      data: pitchRadiansTotal,
-      yTitle: 'Radians',
-    },
-    {
-      label: 'Yaw Radians',
-      data: yawRadiansTotal,
-      yTitle: 'Radians',
-    },
-    {
-      label: 'Latitude',
-      data: latitudeTotal,
-      yTitle: 'Latitude',
-    },
-    {
-      label: 'Longitude',
-      data: longitudeTotal,
-      yTitle: 'Longitude',
-    },
-    {
-      label: 'Acceleration',
-      data: accelerationDataTotal,
-      yTitle: 'Acceleration (m/s²)',
-    },
-    {
-      label: 'Altitude',
-      data: altitudeTotal,
-      yTitle: 'Altitude (m)',
-    },
-    {
-      label: 'Voltage',
-      data: voltageTotal,
-      yTitle: 'Voltage',
-    },
+    { label: 'Roll Radians', data: rollRadiansTotal, yTitle: 'Radians' },
+    { label: 'Pitch Radians', data: pitchRadiansTotal, yTitle: 'Radians' },
+    { label: 'Yaw Radians', data: yawRadiansTotal, yTitle: 'Radians' },
+    { label: 'Latitude', data: latitudeTotal, yTitle: 'Latitude' },
+    { label: 'Longitude', data: longitudeTotal, yTitle: 'Longitude' },
+    { label: 'Acceleration', data: accelerationDataTotal, yTitle: 'Acceleration (m/s²)' },
+    { label: 'Altitude', data: altitudeTotal, yTitle: 'Altitude (m)' },
+    { label: 'Voltage', data: voltageTotal, yTitle: 'Voltage' }
   ]
 
+  console.log('Current Tab:', chartConfigs[currentTab].label)
   const currentConfig = chartConfigs[currentTab]
 
   return (
     <div className="bottom-container">
+      {/* <div className="chart-header">{currentConfig && <h2>{currentConfig.label}</h2>}</div> */}
       <div className="bottom-box">
         {currentConfig && (
           <Line
@@ -74,15 +42,15 @@ const Chart = ({ rocketData = [], currentTab = 0 }) => {
                   label: currentConfig.label,
                   data: currentConfig.data,
                   borderColor: '#FFFFFF',
-                  pointRadius: 0,
-                },
-              ],
+                  pointRadius: 0
+                }
+              ]
             }}
             options={{
               plugins: {
                 legend: {
-                  display: false,
-                },
+                  display: false
+                }
               },
               scales: {
                 y: {
@@ -90,22 +58,22 @@ const Chart = ({ rocketData = [], currentTab = 0 }) => {
                   title: {
                     display: true,
                     text: currentConfig.yTitle,
-                    color: 'white',
-                  },
+                    color: 'white'
+                  }
                 },
                 x: {
                   ticks: { color: 'white' },
                   title: {
                     display: true,
                     text: 'Time (s)',
-                    color: 'white',
-                  },
-                },
+                    color: 'white'
+                  }
+                }
               },
               animation: {
-                duration: 0.045, 
-                easing: 'linear',
-              },
+                duration: 0.045,
+                easing: 'linear'
+              }
             }}
           />
         )}

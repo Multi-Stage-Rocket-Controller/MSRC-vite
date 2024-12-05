@@ -100,32 +100,32 @@ const SimulationScreen = () => {
               </button>
             </li>
             <li>
-              <button className="current-button" onClick={() => handleCameraChange('xz')}>
+              <button className="current-button" onClick={() => {handleCameraChange('xz');handleTabChange(2)}}>
                 Yaw: {yaw}
               </button>
             </li>
             <li>
-              <button className="current-button">
+              <button className="current-button" onClick={() => {handleTabChange(5)}}>
                 Acceleration: {data.length > 0 ? data[data.length - 1].Acc_net : 0}
               </button>
             </li>
             <li>
-              <button className="current-button">
+              <button className="current-button" onClick={() => {handleTabChange(6)}}>
                 Altitude: {data.length > 0 ? data[data.length - 1].Altitude : 0}
               </button>
             </li>
             <li>
-              <button className="current-button">
+              <button className="current-button" onClick={() => {handleTabChange(7)}}>
                 Voltage: {data.length > 0 ? data[data.length - 1].Voltage : 0}
               </button>
             </li>
             <li>
-              <button className="current-button">
+              <button className="current-button" onClick={() => {handleTabChange(3)}}>
                 Longitude: {data.length > 0 ? data[data.length - 1].Longitude : 0}
               </button>
             </li>
             <li>
-              <button className="current-button">
+              <button className="current-button" onClick={() => {handleTabChange(4)}}>
                 Latitude: {data.length > 0 ? data[data.length - 1].Latitude : 0}
               </button>
             </li>

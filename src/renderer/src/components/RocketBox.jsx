@@ -5,8 +5,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import RedRocket from '../assets/red_rocket.glb'
 
 const RocketBox = ({
-  width = 300,
-  height = 300,
+  width = 450,
+  height = 480,
   roll = 0,
   pitch = 0,
   yaw = 0,
@@ -72,14 +72,12 @@ const RocketBox = ({
       gltf => {
         const model = gltf.scene
         pivot.add(model) // Add model to pivot
-
-        // Scale the model
         model.scale.set(5, 5, 5)
 
-        // Center the model
+        // Model centering
         const bbox = new THREE.Box3().setFromObject(model)
         const center = bbox.getCenter(new THREE.Vector3())
-        model.position.sub(center) // Shift model to center
+        model.position.sub(center)
       },
       undefined,
       error => console.error('Error loading model:', error)
@@ -128,6 +126,7 @@ const RocketBox = ({
   useEffect(() => {
     if (pivotRef.current) {
       pivotRef.current.rotation.set(roll, pitch, yaw)
+      console.log("Changed rotation")
     }
   }, [roll, pitch, yaw])
 

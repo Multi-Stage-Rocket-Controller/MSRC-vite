@@ -1,7 +1,7 @@
 @import './base.css';
 
 .master {
-  border: 3px solid green;
+  /* border: 3px solid green; */ /* For seeing div */
   width: 90vw;
   height: 90vh;
   display: flex;
