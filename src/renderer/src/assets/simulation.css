@@ -16,72 +16,6 @@
   padding: 10px;
 }
 
-.main {
-  display: flex;
-  width: 100%;
-  flex: 1;
-}
-
-.buttons {
-  gap: 10px;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 8px solid var(--figma-green);
-  border-radius: 10px;
-  background-color: var(--figma-dark-green);
-  list-style: none;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.left-side {
-  /* border: 3px solid var(--figma-green); */
-  width: 50%;
-  margin: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-}
-
-
-.right-side {
-  border: 8px solid var(--figma-green);
-  border-radius: 10px;
-  margin: 10px;
-  width: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.rocket {
-  border: 3px solid var(--figma-green);
-  aspect-ratio: 1;
-}
-
-.current-button {
-  font-family: inherit;
-  color: var(--figma-white);
-  cursor: pointer;
-  background-color: black;
-  border: 3px solid var(--figma-green);
-  text-align: center;
-  border-radius: 20px;
-  padding: 10px 20px;
-  width: 100%;
-  transition: background-color 0.3s, stroke 0.3s; /* Smooth transition */
-}
-
-.current-button:hover {
-  background-color: var(--figma-green);
-}
-
-.current-button:active {
-  background-color: var(--figma-white);
-  transform: scale(0.9);
-}
-
 .start-button {
   font-family: inherit;
   cursor: pointer;
@@ -91,7 +25,9 @@
   border-radius: 20px;
   padding: 10px 20px;
   color: white;
-  transition: background-color 0.3s, stroke 0.3s; /* Smooth transition */
+  transition:
+    background-color 0.3s,
+    stroke 0.3s; /* Smooth transition */
 }
 
 .start-button:hover {
@@ -113,7 +49,9 @@
   border-radius: 20px;
   padding: 10px 20px;
   color: white;
-  transition: background-color 0.3s, stroke 0.1s; /* Smooth transition */
+  transition:
+    background-color 0.3s,
+    stroke 0.1s; /* Smooth transition */
 }
 
 .stop-button:hover {
@@ -126,25 +64,19 @@
   transform: scale(0.9);
 }
 
-.control-buttons {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  margin: 10px;
-  width: 215px;
-}
-
 .back-button {
   background-color: black;
   cursor: pointer;
-  border: 3px solid var(--figma-green); 
-  border-radius: 50%; 
-  width: 40px; 
-  height: 40px; 
+  border: 3px solid var(--figma-green);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s, stroke 0.3s; 
+  transition:
+    background-color 0.3s,
+    stroke 0.3s;
 }
 
 .back-button:hover {
@@ -155,9 +87,85 @@
   width: 24px;
   height: 24px;
   stroke: var(--figma-green);
-  transition: stroke 0.3s; 
+  transition: stroke 0.3s;
 }
 
 .back-button:hover svg {
   stroke: white;
+}
+
+.main {
+  display: flex;
+  width: 100%;
+  flex: 1;
+}
+
+.left-side {
+  /* border: 3px solid var(--figma-green); */
+  width: 50%;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+}
+
+.buttons {
+  gap: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 8px solid var(--figma-green);
+  border-radius: 10px;
+  background-color: var(--figma-dark-green);
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.current-button {
+  font-family: inherit;
+  color: var(--figma-white);
+  cursor: pointer;
+  background-color: black;
+  border: 3px solid var(--figma-green);
+  text-align: center;
+  border-radius: 20px;
+  padding: 10px 20px;
+  width: 100%;
+  transition:
+    background-color 0.3s,
+    stroke 0.3s; /* Smooth transition */
+}
+
+.current-button:hover {
+  background-color: var(--figma-green);
+}
+
+.current-button:active {
+  background-color: var(--figma-white);
+  transform: scale(0.9);
+}
+
+.control-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 10px;
+  width: 215px;
+}
+
+.right-side {
+  border: 8px solid var(--figma-green);
+  border-radius: 10px;
+  margin: 10px;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.camera-label {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 10px;
 }
