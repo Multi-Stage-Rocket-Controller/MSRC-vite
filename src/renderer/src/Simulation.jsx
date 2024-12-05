@@ -16,44 +16,102 @@ const SimulationScreen = () => {
 
   const threeDivRef1 = useRef(null)
 
-  const handleStart = () => window.electron.ipcRenderer.send('ws-send', 'start')
-  const handleStop = () => window.electron.ipcRenderer.send('ws-send', 'stop')
+  const isElectron = navigator.userAgent.toLowerCase().indexOf(' electron/') > -1;
+
+  const handleStart = () => {
+    if (isElectron) {
+      window.electron.ipcRenderer.send('ws-send', 'start')
+    } else {
+      if (window.ws && window.ws.readyState === WebSocket.OPEN) {
+        window.ws.send('start');
+      } else {
+        console.error('WebSocket is not connected');
+      }
+    }
+  };
+
+  const handleStop = () => {
+    if (isElectron) {
+      window.electron.ipcRenderer.send('ws-send', 'stop')
+    } else {
+      if (window.ws && window.ws.readyState === WebSocket.OPEN) {
+        window.ws.send('stop');
+      } else {
+        console.error('WebSocket is not connected');
+      }
+    }
+  };
+
   const handleMainWindow = () => {
-    window.electron.ipcRenderer.send('ws-send', 'reset')
+    if (isElectron) {
+      window.electron.ipcRenderer.send('ws-send', 'reset')
+    } else {
+      if (window.ws && window.ws.readyState === WebSocket.OPEN) {
+        window.ws.send('reset');
+      } else {
+        console.error('WebSocket is not connected');
+      }
+    }
     navigate('/')
   }
   const handleTabChange = (tabIndex) => setActiveTab(tabIndex)
   const handleCameraChange = (camera) => setRocketCamera(camera)
 
-  var startTime = new Date()
-  var firstEntryHit = false
+  let startTime = new Date();
+  let firstEntryHit = false;
 
   useEffect(() => {
-    window.electron.ipcRenderer.on('ws-message', (event, data) => {
-      // console.log('Raw data received from WebSocket:', data);
+    const handleMessage = (event, data) => {
       try {
-        data = new TextDecoder().decode(data)
-        const receivedData = JSON.parse(data)
-        // console.log('Parsed data:', receivedData);
-        if (!firstEntryHit) {
-          startTime = new Date(receivedData.timestamp).getTime()
-          firstEntryHit = true
+        if (isElectron) {
+          data = new TextDecoder().decode(data);
+          const receivedData = JSON.parse(data);
+          if (!firstEntryHit) {
+            startTime = new Date(receivedData.timestamp).getTime();
+            firstEntryHit = true;
+          }
+          receivedData.timestamp = Math.round((new Date(receivedData.timestamp).getTime() - startTime) / 100) / 10;
+          setData((prevData) => [...prevData, receivedData]);
+          setRoll(receivedData.Roll_Radians);
+          setPitch(receivedData.Pitch_Radians);
+          setYaw(receivedData.Yaw_Radians);
+        } else {
+          // Browser environment
+          const receivedData = event.detail;
+          if (!firstEntryHit) {
+            startTime = new Date(receivedData.timestamp).getTime();
+            firstEntryHit = true;
+          }
+          receivedData.timestamp = Math.round((new Date(receivedData.timestamp).getTime() - startTime) / 100) / 10;
+          setData((prevData) => [...prevData, receivedData]);
+          setRoll(receivedData.Roll_Radians);
+          setPitch(receivedData.Pitch_Radians);
+          setYaw(receivedData.Yaw_Radians);
         }
-        receivedData.timestamp =
-          Math.round((new Date(receivedData.timestamp).getTime() - startTime) / 100) / 10
-        setData((prevData) => [...prevData, receivedData])
-        setRoll(receivedData.Roll_Radians)
-        setPitch(receivedData.Pitch_Radians)
-        setYaw(receivedData.Yaw_Radians)
       } catch (error) {
         console.error('Error parsing JSON:', error)
       }
-    })
+    };
+
+    if (isElectron) {
+      window.electron.ipcRenderer.on('ws-message', handleMessage);
+    } else {
+      window.addEventListener('ws-message', handleMessage);
+    }
 
     return () => {
-      window.electron.ipcRenderer.removeAllListeners('ws-message')
-    }
-  }, [])
+      if (isElectron) {
+        window.electron.ipcRenderer.removeListener('ws-message', handleMessage);
+      } else {
+        window.removeEventListener('ws-message', handleMessage);
+      }
+    };
+  }, [isElectron]);
+
+  const simDivStyle = {
+    display: 'grid',
+    alignItems: 'center',
+  };
 
   return (
     <div className="master">
@@ -143,4 +201,4 @@ const SimulationScreen = () => {
   )
 }
 
-export default SimulationScreen
+export default SimulationScreen;
