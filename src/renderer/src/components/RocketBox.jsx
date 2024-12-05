@@ -76,7 +76,6 @@ const RocketBox = ({
       gltf => {
         const model = gltf.scene
         pivot.add(model) // Add model to pivot
-        // model.scale.set(5, 5, 5)
         model.scale.set(7,7,7)
 
         // Model centering
@@ -133,8 +132,10 @@ const RocketBox = ({
   useEffect(() => {
     if (pivotRef.current) {
       pivotRef.current.rotation.set(roll, pitch, yaw)
+      // pivotRef.current.rotation.set(appliedRoll, appliedPitch, appliedYaw)
+      // console.log(`Current Camera: ${currentCamera}, Roll: ${appliedRoll}, Pitch: ${appliedPitch}, Yaw: ${appliedYaw}`)
     }
-  }, [roll, pitch, yaw])
+  }, [roll, pitch, yaw, currentCamera])
 
   return <div ref={containerRef} style={{ width, height, display: 'block', position: 'relative' }} />
 }
