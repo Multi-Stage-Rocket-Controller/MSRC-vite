@@ -16,14 +16,14 @@ const Chart = ({ rocketData = [], currentTab = 0 }) => {
 
   // Configuration for each tab
   const chartConfigs = [
-    { label: 'Roll Radians', data: rollRadiansTotal, yTitle: 'Radians' },
-    { label: 'Pitch Radians', data: pitchRadiansTotal, yTitle: 'Radians' },
-    { label: 'Yaw Radians', data: yawRadiansTotal, yTitle: 'Radians' },
+    { label: 'Roll', data: rollRadiansTotal, yTitle: 'Roll (Radians)' },
+    { label: 'Pitch', data: pitchRadiansTotal, yTitle: ' Pitch (Radians)' },
+    { label: 'Yaw', data: yawRadiansTotal, yTitle: 'Yaw (Radians)' },
     { label: 'Latitude', data: latitudeTotal, yTitle: 'Latitude' },
     { label: 'Longitude', data: longitudeTotal, yTitle: 'Longitude' },
     { label: 'Acceleration', data: accelerationDataTotal, yTitle: 'Acceleration (m/s²)' },
     { label: 'Altitude', data: altitudeTotal, yTitle: 'Altitude (m)' },
-    { label: 'Voltage', data: voltageTotal, yTitle: 'Voltage' }
+    { label: 'Voltage', data: voltageTotal, yTitle: 'Voltage (V)' }
   ]
 
   console.log('Current Tab:', chartConfigs[currentTab].label)

@@ -26,7 +26,6 @@ const SimulationScreen = () => {
   const handleCameraChange = (camera) => setRocketCamera(camera)
 
   var startTime = new Date()
-
   var firstEntryHit = false
 
   useEffect(() => {
@@ -120,12 +119,12 @@ const SimulationScreen = () => {
               </button>
             </li>
             <li>
-              <button className="current-button" onClick={() => {handleTabChange(3)}}>
+              <button className="current-button" onClick={() => {handleTabChange(4)}}>
                 Longitude: {data.length > 0 ? data[data.length - 1].Longitude : 0}
               </button>
             </li>
             <li>
-              <button className="current-button" onClick={() => {handleTabChange(4)}}>
+              <button className="current-button" onClick={() => {handleTabChange(3)}}>
                 Latitude: {data.length > 0 ? data[data.length - 1].Latitude : 0}
               </button>
             </li>
@@ -140,7 +139,6 @@ const SimulationScreen = () => {
           </div>
         </div>
       </div>
-              {/* <Chart rocketData={data} currentTab={activeTab}/> */}
     </div>
   )
 }
