@@ -9,12 +9,7 @@
 }
 
 .bottom-box {
-  flex: 1;
-  margin: 5px;
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  justify-content: center;
+  position: relative;
+  height: 400px;
   width: 100%;
-  height: 100%;
 }

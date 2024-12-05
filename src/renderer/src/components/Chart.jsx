@@ -1,42 +1,42 @@
 import { Chart as ChartJS } from 'chart.js/auto'
 import { Line } from 'react-chartjs-2'
-import React from 'react'
+import React, { useMemo } from 'react'
 import '../assets/chart.css'
 
 const Chart = ({ rocketData = [], currentTab = 0 }) => {
-  const labelArrayTotal = rocketData.map((data) => data.timestamp)
-  const rollRadiansTotal = rocketData.map((data) => data.Roll_Radians)
-  const pitchRadiansTotal = rocketData.map((data) => data.Pitch_Radians)
-  const yawRadiansTotal = rocketData.map((data) => data.Yaw_Radians)
-  const latitudeTotal = rocketData.map((data) => data.Latitude)
-  const longitudeTotal = rocketData.map((data) => data.Longitude)
-  const accelerationDataTotal = rocketData.map((data) => data.Acc_net)
-  const altitudeTotal = rocketData.map((data) => data.Altitude)
-  const voltageTotal = rocketData.map((data) => data.Voltage)
+  const limitedData = useMemo(() => {
+    return rocketData.slice(-50)
+  }, [rocketData])
+  const labelArray = limitedData.map((data) => data.timestamp)
+  const rollRadians = limitedData.map((data) => data.Roll_Radians)
+  const pitchRadians = limitedData.map((data) => data.Pitch_Radians)
+  const yawRadians = limitedData.map((data) => data.Yaw_Radians)
+  const latitude = limitedData.map((data) => data.Latitude)
+  const longitude = limitedData.map((data) => data.Longitude)
+  const accelerationData = limitedData.map((data) => data.Acc_net)
+  const altitude = limitedData.map((data) => data.Altitude)
+  const voltage = limitedData.map((data) => data.Voltage)
 
-  // Configuration for each tab
-  const chartConfigs = [
-    { label: 'Roll', data: rollRadiansTotal, yTitle: 'Roll (Radians)' },
-    { label: 'Pitch', data: pitchRadiansTotal, yTitle: ' Pitch (Radians)' },
-    { label: 'Yaw', data: yawRadiansTotal, yTitle: 'Yaw (Radians)' },
-    { label: 'Latitude', data: latitudeTotal, yTitle: 'Latitude' },
-    { label: 'Longitude', data: longitudeTotal, yTitle: 'Longitude' },
-    { label: 'Acceleration', data: accelerationDataTotal, yTitle: 'Acceleration (m/s²)' },
-    { label: 'Altitude', data: altitudeTotal, yTitle: 'Altitude (m)' },
-    { label: 'Voltage', data: voltageTotal, yTitle: 'Voltage (V)' }
-  ]
+  const chartConfigs = useMemo(() => [
+    { label: 'Roll', data: rollRadians, yTitle: 'Roll (Radians)' },
+    { label: 'Pitch', data: pitchRadians, yTitle: 'Pitch (Radians)' },
+    { label: 'Yaw', data: yawRadians, yTitle: 'Yaw (Radians)' },
+    { label: 'Latitude', data: latitude, yTitle: 'Latitude' },
+    { label: 'Longitude', data: longitude, yTitle: 'Longitude' },
+    { label: 'Acceleration', data: accelerationData, yTitle: 'Acceleration (m/s²)' },
+    { label: 'Altitude', data: altitude, yTitle: 'Altitude (m)' },
+    { label: 'Voltage', data: voltage, yTitle: 'Voltage (V)' }
+  ], [rollRadians, pitchRadians, yawRadians, latitude, longitude, accelerationData, altitude, voltage])
 
-  // console.log('Current Tab:', chartConfigs[currentTab].label) // Debugging
   const currentConfig = chartConfigs[currentTab]
 
   return (
     <div className="bottom-container">
-      {/* <div className="chart-header">{currentConfig && <h2>{currentConfig.label}</h2>}</div> */}
       <div className="bottom-box">
         {currentConfig && (
           <Line
             data={{
-              labels: labelArrayTotal,
+              labels: labelArray,
               datasets: [
                 {
                   label: currentConfig.label,
@@ -71,9 +71,11 @@ const Chart = ({ rocketData = [], currentTab = 0 }) => {
                 }
               },
               animation: {
-                duration: 0.045,
+                duration: 0.2,
                 easing: 'linear'
-              }
+              },
+              responsive: true,
+              maintainAspectRatio: false
             }}
           />
         )}
