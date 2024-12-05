@@ -26,25 +26,27 @@
   gap: 10px;
   padding: 10px;
   margin-bottom: 10px;
-  border: 1px solid var(--figma-light-green);
-
+  border: 8px solid var(--figma-light-green);
+  border-radius: 10px;
   background-color: var(--figma-dark-green);
-
   list-style: none;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
 
 .left-side {
+  border: 3px solid var(--figma-green);
   width: 50%;
   margin: 10px;
   align-items: stretch;
 }
 
 .right-side {
-  border: 1px solid var(--figma-yellow);
+  border: 8px solid var(--figma-yellow);
+  border-radius: 10px;
   width: 50%;
   margin: 10px;
+  align-items: center;
 }
 
 .rocket {

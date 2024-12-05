@@ -140,6 +140,7 @@ const SimulationScreen = () => {
       </div>
       <div className="main">
         <div className="left-side">
+          <div>
           <ul className="buttons">
             <li>
               <button className="current-button" onClick={() => {handleCameraChange('xy'); handleTabChange(0);}}>
@@ -182,6 +183,7 @@ const SimulationScreen = () => {
               </button>
             </li>
           </ul>
+          </div>
           <Chart rocketData={data} currentTab={activeTab}/>
         </div>
         <div className="right-side">
