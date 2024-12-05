@@ -27,7 +27,7 @@
   color: white;
   transition:
     background-color 0.3s,
-    stroke 0.3s; /* Smooth transition */
+    stroke 0.3s; 
 }
 
 .start-button:hover {
@@ -51,7 +51,7 @@
   color: white;
   transition:
     background-color 0.3s,
-    stroke 0.1s; /* Smooth transition */
+    stroke 0.1s; 
 }
 
 .stop-button:hover {
@@ -133,7 +133,7 @@
   width: 100%;
   transition:
     background-color 0.3s,
-    stroke 0.3s; /* Smooth transition */
+    stroke 0.3s; 
 }
 
 .current-button:hover {
