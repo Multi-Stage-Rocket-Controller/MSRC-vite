@@ -3,10 +3,11 @@
   flex: 1;
   box-sizing: border-box;
   border: 8px solid rgb(55, 82, 55);
-  background-color: rgba(74, 164, 51, 0.34);
+  background-color: var(--figma-dark-green);
   border-radius: 10px;
   justify-content: center;
 }
+
 .bottom-box {
   flex: 1;
   margin: 5px;
