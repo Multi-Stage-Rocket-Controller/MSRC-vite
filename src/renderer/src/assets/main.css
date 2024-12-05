@@ -27,7 +27,7 @@ code {
 }
 
 /* For splash */
-#root { 
+#root {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,11 +82,19 @@ code {
   line-height: 38px;
   font-size: 14px;
   background-color: transparent;
+  transition:
+    stroke 0.3s,
+    background-color 0.3s;
 }
 
 .action a:hover {
   border: 3px solid var(--figma-green);
   background-color: var(--figma-green);
+}
+
+.action a:active {
+  background-color: var(--figma-white);
+  transform: scale(0.9);
 }
 
 .versions {
