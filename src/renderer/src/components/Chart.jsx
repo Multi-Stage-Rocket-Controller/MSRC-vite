@@ -26,7 +26,7 @@ const Chart = ({ rocketData = [], currentTab = 0 }) => {
     { label: 'Voltage', data: voltageTotal, yTitle: 'Voltage (V)' }
   ]
 
-  console.log('Current Tab:', chartConfigs[currentTab].label)
+  // console.log('Current Tab:', chartConfigs[currentTab].label) // Debugging
   const currentConfig = chartConfigs[currentTab]
 
   return (
