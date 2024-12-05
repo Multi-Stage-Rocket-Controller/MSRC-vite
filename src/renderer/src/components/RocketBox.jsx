@@ -18,20 +18,24 @@ const RocketBox = ({
   const camerasRef = useRef({})
   const pivotRef = useRef(null) 
   const animationRef = useRef(null)
+  const currentCameraRef = useRef(currentCamera)
 
+  // Update the currentCamera ref whenever it changes
   useEffect(() => {
-    // Initialize Scene
+    currentCameraRef.current = currentCamera
+  }, [currentCamera])
+
+  // Initialize Scene, Renderer, and Cameras once
+  useEffect(() => {
     const scene = new THREE.Scene()
     sceneRef.current = scene
 
-    // Initialize Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true })
     renderer.setSize(width, height)
     renderer.setPixelRatio(window.devicePixelRatio)
     rendererRef.current = renderer
     containerRef.current.appendChild(renderer.domElement)
 
-    // Add Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 1)
     scene.add(ambientLight)
     const directionalLights = [
@@ -88,11 +92,12 @@ const RocketBox = ({
       animationRef.current = requestAnimationFrame(animate)
       renderer.clear()
 
-      if (currentCamera && camerasRef.current[currentCamera]) {
+      const cam = currentCameraRef.current
+      if (cam && camerasRef.current[cam]) {
         renderer.setViewport(0, 0, width, height)
         renderer.setScissor(0, 0, width, height)
         renderer.setScissorTest(true)
-        renderer.render(scene, camerasRef.current[currentCamera])
+        renderer.render(scene, camerasRef.current[cam])
       }
     }
     animate()
@@ -121,8 +126,9 @@ const RocketBox = ({
         containerRef.current.removeChild(renderer.domElement)
       }
     }
-  }, [width, height, currentCamera])
+  }, [width, height])
 
+  // Handle Rotation
   useEffect(() => {
     if (pivotRef.current) {
       pivotRef.current.rotation.set(roll, pitch, yaw)
