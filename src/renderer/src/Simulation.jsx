@@ -107,12 +107,7 @@ const SimulationScreen = () => {
       }
     };
   }, [isElectron]);
-
-  const simDivStyle = {
-    display: 'grid',
-    alignItems: 'center',
-  };
-
+  
   return (
     <div className="master">
       <div className="header">
