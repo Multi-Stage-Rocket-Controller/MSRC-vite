@@ -6,7 +6,7 @@ import RedRocket from '../assets/red_rocket.glb'
 
 const RocketBox = ({
   height = 480,
-  width = 300,
+  width = 420,
   roll = 0,
   pitch = 0,
   yaw = 0,
@@ -76,7 +76,8 @@ const RocketBox = ({
       gltf => {
         const model = gltf.scene
         pivot.add(model) // Add model to pivot
-        model.scale.set(5, 5, 5)
+        // model.scale.set(5, 5, 5)
+        model.scale.set(7,7,7)
 
         // Model centering
         const bbox = new THREE.Box3().setFromObject(model)
