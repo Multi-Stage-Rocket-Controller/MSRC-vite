@@ -2,7 +2,7 @@
   display: flex;
   flex: 1;
   box-sizing: border-box;
-  border: 8px solid rgb(55, 82, 55);
+  border: 8px solid var(--figma-green);
   background-color: var(--figma-dark-green);
   border-radius: 10px;
   justify-content: center;

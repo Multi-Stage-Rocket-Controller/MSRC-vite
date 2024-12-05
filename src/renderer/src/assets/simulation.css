@@ -26,7 +26,7 @@
   gap: 10px;
   padding: 10px;
   margin-bottom: 10px;
-  border: 8px solid var(--figma-light-green);
+  border: 8px solid var(--figma-green);
   border-radius: 10px;
   background-color: var(--figma-dark-green);
   list-style: none;
@@ -45,7 +45,7 @@
 
 
 .right-side {
-  border: 8px solid var(--figma-light-green);
+  border: 8px solid var(--figma-green);
   border-radius: 10px;
   margin: 10px;
   width: 50%;
@@ -65,7 +65,7 @@
   color: var(--figma-white);
   cursor: pointer;
   background-color: black;
-  border: 3px solid var(--figma-light-green);
+  border: 3px solid var(--figma-green);
   text-align: center;
   border-radius: 20px;
   padding: 10px 20px;
@@ -74,7 +74,7 @@
 }
 
 .current-button:hover {
-  background-color: var(--figma-light-green);
+  background-color: var(--figma-green);
 }
 
 .current-button:active {
