@@ -187,10 +187,8 @@ const SimulationScreen = () => {
           <Chart rocketData={data} currentTab={activeTab}/>
         </div>
         <div className="right-side">
-          <div className="threeDiv">
-            <div ref={threeDivRef1}>
+          <div className="threeDiv" ref={threeDivRef1}>
               <RocketBox roll={roll} pitch={pitch} yaw={yaw} currentCamera={rocketCamera} />
-            </div>
           </div>
         </div>
       </div>
