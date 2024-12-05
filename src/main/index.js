@@ -14,8 +14,10 @@ let mainWindow = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1050,
+    width: 1090,
     height: 800,
+    minWidth:1070,
+    minHeight: 650,
     icon: path.join(__dirname, '../../resources/rocket_icon.ico'),
     show: false,
     autoHideMenuBar: true,
