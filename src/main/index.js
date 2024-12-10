@@ -1,16 +1,18 @@
-// main/index.js
 const { app, shell, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const { electronApp, optimizer, is } = require('@electron-toolkit/utils');
 const { spawn } = require('child_process');
 const fs = require('fs');
 const WebSocket = require('ws');
-const csvParser = require('csv-parser');
+// const csvParser = require('csv-parser');
 
 let loadedCSVData = null;
 let ws = null;
 let pythonServerProcess = null;
 let mainWindow = null;
+let reconnectAttempts = 0;
+const maxReconnectAttempts = 5;
+const reconnectInterval = 5000; // 5 seconds
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -80,6 +82,7 @@ function establishWebSocketConnection(mainWindow) {
   ws.on('open', () => {
     console.log('WebSocket connected in main process');
     mainWindow.webContents.send('ws-connected');
+    reconnectAttempts = 0; // Reset the counter on successful connection
   });
 
   ws.on('message', (data) => {
@@ -89,62 +92,74 @@ function establishWebSocketConnection(mainWindow) {
   ws.on('error', (error) => {
     console.error('WebSocket error:', error);
     mainWindow.webContents.send('ws-error', error.message);
-    // Attempt to reconnect after a delay
-    setTimeout(() => {
-      console.log('Attempting to reconnect WebSocket...');
-      establishWebSocketConnection(mainWindow);
-    }, 1000); // Retry after 1 second
+    attemptReconnect(mainWindow);
   });
 
   ws.on('close', () => {
     console.log('WebSocket connection closed');
     mainWindow.webContents.send('ws-closed');
-    // Attempt to reconnect after a delay
-    setTimeout(() => {
-      console.log('Attempting to reconnect WebSocket...');
-      establishWebSocketConnection(mainWindow);
-    }, 1000); // Retry after 1 second
+    attemptReconnect(mainWindow);
   });
+}
+
+function attemptReconnect(mainWindow) {
+  if (reconnectAttempts < maxReconnectAttempts) {
+    reconnectAttempts++;
+    console.log(`Attempting to reconnect WebSocket... (${reconnectAttempts}/${maxReconnectAttempts})`);
+    setTimeout(() => {
+      establishWebSocketConnection(mainWindow);
+    }, reconnectInterval);
+  } else {
+    console.log('Max reconnect attempts reached. Stopping reconnection attempts.');
+  }
 }
 
 function startPythonServer() {
   return new Promise((resolve, reject) => {
+    if (pythonServerProcess) {
+      console.log('Python server is already running.');
+      return resolve();
+    }
+
     let pythonExecutable;
     let pythonArgs = [];
 
     if (app.isPackaged) {
       // Path to the packaged Python server executable
       if (process.platform === 'win32') {
-        pythonExecutable = path.join(process.resourcesPath, 'python-dist', 'serial.exe');
+        pythonExecutable = path.join(process.resourcesPath, 'pythondist', 'win', 'WS_Server.exe');
       } else if (process.platform === 'darwin') {
-        pythonExecutable = path.join(process.resourcesPath, 'python-dist', 'serial');
+        pythonExecutable = path.join(process.resourcesPath, 'pythondist', 'mac', 'WS_Server');
       } else if (process.platform === 'linux') {
-        pythonExecutable = path.join(process.resourcesPath, 'python-dist', 'serial');
+        pythonExecutable = path.join(process.resourcesPath, 'pythondist', 'linux', 'WS_Server');
       }
     } else {
       // Paths during development
-      const pythonScriptPath = path.join(__dirname, '../../src/python-server/serial.py');
-      pythonExecutable = process.platform !== 'win32' ? 'python3' : 'python';
-      pythonArgs = [pythonScriptPath];
+      if (process.platform === 'win32') {
+        pythonExecutable = path.join(__dirname, '../../pythondist/win/WS_Server.exe');
+      } else if (process.platform === 'darwin') {
+        pythonExecutable = path.join(__dirname, '../../pythondist/mac/WS_Server');
+      } else if (process.platform === 'linux') {
+        pythonExecutable = path.join(__dirname, '../../pythondist/linux/WS_Server');
+      }
+      pythonArgs = []; // Ensure pythonArgs is empty for executables
     }
 
     console.log('App is packaged:', app.isPackaged);
     console.log(`Starting Python server from: ${pythonExecutable}`);
+    console.log(`Python server arguments: ${pythonArgs.join(' ')}`);
 
     // Check if the executable exists
-    if (app.isPackaged && !fs.existsSync(pythonExecutable)) {
+    if (!fs.existsSync(pythonExecutable)) {
       const errorMsg = `Python executable not found at path: ${pythonExecutable}`;
       console.error(errorMsg);
       return reject(new Error(errorMsg));
     }
 
-    if (app.isPackaged) {
-      // When packaged, execute the bundled executable directly
-      pythonServerProcess = spawn(pythonExecutable);
-    } else {
-      // During development, run the script with Python
-      pythonServerProcess = spawn(pythonExecutable, pythonArgs);
-    }
+    pythonServerProcess = spawn(pythonExecutable, pythonArgs, {
+      detached: true,
+      stdio: 'pipe'
+    });
 
     pythonServerProcess.stdout.on('data', (data) => {
       const message = data.toString();
@@ -180,7 +195,8 @@ function startPythonServer() {
 
 function stopPythonServer() {
   if (pythonServerProcess) {
-    pythonServerProcess.kill();
+    // Send SIGINT or SIGTERM to the Python process
+    process.kill(-pythonServerProcess.pid, 'SIGINT'); // Kill the process group
     pythonServerProcess = null;
     console.log('Python server stopped.');
   }
@@ -295,5 +311,5 @@ app.on('window-all-closed', () => {
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
   console.error('Uncaught Exception:', error);
-  // Optionally, show a dialog or notification to the user
+  stopPythonServer(); // Ensure the Python server is stopped on uncaught exceptions
 });
