@@ -10,7 +10,7 @@ when in the project, run:
 ```
 npm i
 ```
-This will install all dependencies for the application. To run the WebSocket server script, you will need to do the following:
+This will install all dependencies for the application.
 
 For websocket development:
 >[!NOTE]
