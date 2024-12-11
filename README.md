@@ -48,7 +48,9 @@ This also starts the python websocket server in the background that has been nic
 >[!WARNING]
 >It should be noted that we currently have trouble building the application.
 >```npm start``` will not work with the current configuration of packages and code and would need to be looked into for future versions.
+
 >[!NOTE]
-> There are other commands that are within the framework that we used ([electron-vite](https://electron-vite.org/)). You can customize this to your liking. 
+> There are other commands that are within the framework that we used ([electron-vite](https://electron-vite.org/)). You can customize this to your liking.
+
 >[!NOTE]
 >Currently we have Linux and Windows funcitonality But nothing with darwin for MacOS systems.
