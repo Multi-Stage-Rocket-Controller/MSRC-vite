@@ -12,7 +12,7 @@ npm i
 ```
 This will install all dependencies for the application.
 
-For websocket development:
+## Websocket development:
 >[!NOTE]
 > Make sure to have atleast python 3.11 downloaded onto your system before doing any development with the python websocket server.
 >(https://www.python.org/downloads/)
