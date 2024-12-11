@@ -2,31 +2,51 @@
 
 ## Installation Instructions
 >[!WARNING]
-> You will need to have two terminals open. One for the WebSocket server (`Serial.py`) and the other will be for the application. This [requires the newest version of Python](https://www.python.org/downloads/).
+> When running the application a secondary server "active" terminal will be open. This needs to be closed after running the application for future use.
 
+Install Node.js (https://nodejs.org/en/learn/getting-started/how-to-install-nodejs)
+
+when in the project, run:
 ```
 npm i
 ```
 This will install all dependencies for the application. To run the WebSocket server script, you will need to do the following:
+
+For websocket development:
+>[!NOTE]
+> Make sure to have atleast python 3.11 downloaded onto your system before doing any development with the python websocket server.
+>(https://www.python.org/downloads/)
+
+Set up your virtual environment (https://docs.python.org/3/library/venv.html):
 ```
-cd ./src/main/
+python -m venv /path/to/new/virtual/environment
+```
+Activate your environment:
+
+Windows
+```
+.\venv\Scripts\activate
+```
+
+Linux
+```
+source venv/Scripts/bin/activate
+```
+
+Install dependencies:
+```
+cd ./src/python-server
 pip install -r requirements.txt
 ```
 
 ## Running the Application
->[!WARNING]
-> In order to run the Rocket Visualizer, you first need run the python script, *then* run the application.
-
-```
-cd ./src/main
-python Serial.py
-```
->[!NOTE]
->For the above script, `python` might not be the right command. Please [check your version](https://note.nkmk.me/en/python-sys-platform-version-info/) before continuing.
-
 In a new terminal, you can run:
 ```
 npm run dev
 ```
 >[!NOTE]
 > There are other commands that are within the framework that we used ([electron-vite](https://electron-vite.org/)). You can customize this to your liking.
+
+This Starts up the python server in the background that has been nicely compiled into an executable file. This 
+>[!NOTE]
+>Currently we have Linux and Windows funcitonality But nothing with darwin for MacOS systems.
